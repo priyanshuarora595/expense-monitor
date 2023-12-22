@@ -1,0 +1,96 @@
+body {
+  padding: 20px;
+  min-width: fit-content;
+  width: 100%;
+}
+
+.container {
+  max-width: 90%;
+  margin: auto;
+  text-align: center;
+}
+
+.navbar {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.mt-3 {
+  margin-top: 3rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: auto;
+}
+
+th,
+td {
+  border: 1px solid #dddddd;
+  text-align: center;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+.icon-link {
+  margin-right: 5px;
+  color: #007bff;
+  cursor: pointer;
+}
+
+/* Style for edit icon */
+.edit-icon {
+  color: green;
+}
+
+/* Style for delete icon */
+.delete-icon {
+  color: red;
+}
+
+
+
+.nav-btn {
+  color: #dc3545 !important;
+  cursor: pointer;
+}
+
+.nav-btn:hover {
+  color: #9b0b1b !important;
+}
+
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination li {
+  margin: 0;
+  padding: 0;
+}
+
+.pagination button {
+  display: inline-block;
+  padding: 10px;
+  background-color: #f2f2f2;
+  text-decoration: none;
+  color: #333;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.pagination button:disabled{
+  color: #727070;
+}

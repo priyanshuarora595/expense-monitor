@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js"></script>
+  <title>Expense Manager</title>
+</head>
+
+<body onload="check_perm()">
+  <div class="container">
+    <h1>Welcome to Expense Manager</h1>
+    <p>Manage your expenses effortlessly.</p>
+    <a href="login.html" class="btn btn-primary">Login</a>
+    <a href="register.html" class="btn btn-secondary">Register</a>
+  </div>
+</body>
+
+<script>
+  function check_perm(){
+    if (check_user_logged_in()){
+      window.location.href = 'dashboard.html';
+    }
+  }
+</script>
+
+</html>

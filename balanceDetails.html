@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <title>Balance Details</title>
+</head>
+
+<body onload="check_perm()">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Expense Manager</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link " href="dashboard.html">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="balance.html">Balances</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-btn" id="logoutButton">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-3">
+        <h2>Balance Details</h2>
+        <h3 id="message">
+            </h2>
+    </div>
+
+    <span>
+        <h3>Total balance on first day of
+            <span id="month"></span>
+            <span id="year"></span> =
+            <span id="initial"></span>
+        </h3>
+    </span>
+    <br />
+    <h3>Expenditure :-</h3>
+    <div id="expenditure_div">
+        <table id="expenditure_table">
+            <thead>
+                <tr>
+                    <th>source</th>
+                    <th>initial</th>
+                    <th>credits</th>
+                    <th>expenditure</th>
+                    <th>internal transfer</th>
+                    <th>remaining</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <br />
+    <h3>Detailed view :-</h3>
+    <div id="detail_div">
+        <table id="detail_table">
+            <thead>
+                <tr>
+                    <th>commodity</th>
+                    <th>expenditure</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <div id="final_div">
+        <h3>Total credit (income) = <span id="total_credits"></span>
+        </h3>
+        <h3>Total debits (expenditure) = <span id="total_debits"></span>
+        </h3>
+        <h3>Total Remaining amount = <span id="remaining"></span>
+        </h3>
+
+        Thank you
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+
+        document.getElementById("logoutButton").addEventListener("click", function () {
+            logout();
+        });
+
+        async function check_perm() {
+            if (!check_user_logged_in()) {
+                window.location.href = 'index.html';
+            }
+            else {
+                check_user_logged_in();
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = urlParams.get('id');
+                fetch_balance_detail(id);
+
+            }
+        }
+    </script>
+</body>
+
+</html>

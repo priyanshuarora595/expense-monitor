@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+  <title>User Registration</title>
+</head>
+
+<body onload="check_perm()">
+  <div class="container">
+    <h2>User Registration</h2>
+    <p id="message"></p>
+    <form>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" placeholder="Enter first name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" class="form-control" id="lastName" placeholder="Enter last name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select class="form-control" id="gender" required>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="password1">Password</label>
+        <input type="password" class="form-control" id="password1" placeholder="Enter password" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password2">Confirm Password</label>
+        <input type="password" class="form-control" id="password2" placeholder="Confirm password" required />
+      </div>
+    </form>
+    <button type="button" class="btn btn-primary" onclick="attemptRegister()">
+      Register
+    </button>
+
+    <p class="mt-3">
+      Already have an account? <a href="login.html">Login here</a>
+    </p>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function check_perm() {
+      if (check_user_logged_in()) {
+        window.location.href = "dashboard.html";
+      }
+    }
+
+    function attemptRegister() {
+      const username = document.getElementById("username").value;
+      const password1 = document.getElementById("password1").value;
+      const password2 = document.getElementById("password2").value;
+      const email = document.getElementById("email").value;
+      const firstName = document.getElementById("firstName").value;
+      const lastName = document.getElementById("lastName").value;
+      const gender = document.getElementById("gender").value;
+
+      if (password1 != password2) {
+        document.getElementById("message").style.color = "red";
+        document.getElementById("message").textContent = "Password do not match!";
+        setTimeout(function () {
+          document.getElementById("message").textContent = "";
+        }, 3000);
+      }
+      else {
+
+        fetch("https://priyanshuarora.pythonanywhere.com/api/accounts/", {
+          method: "Post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            username: username,
+            password: password1,
+            fname: firstName,
+            lname: lastName,
+            gender: gender,
+            is_active: true,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.id) {
+              document.getElementById("message").textContent =
+                "account created! please login";
+              document.getElementById("message").style.color = "green";
+              window.location.href = "login.html";
+            } else if (data.username) {
+              document.getElementById("message").textContent = data.username;
+              document.getElementById("message").style.color = "red";
+            }
+            setTimeout(function () {
+              document.getElementById("message").textContent = "";
+            }, 3000);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("message").textContent =
+              "An error occurred during login.";
+            document.getElementById("message").style.color = "red";
+            setTimeout(function () {
+              document.getElementById("message").textContent = "";
+            }, 3000);
+          });
+      }
+    }
+  </script>
+</body>
+
+</html>
