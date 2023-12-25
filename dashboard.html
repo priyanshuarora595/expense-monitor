@@ -13,35 +13,22 @@
 </head>
 
 <body onload="check_perm()">
+
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Expense Manager</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <div id="mySidebar" class="sidebar">
+      <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
+      <a href="#" onclick="openModal(modalContentId='addExpenseModalContent')">Add Expense</a>
+      <a class="nav-link " href="internal_transactions.html">Internal transactions</a>
+      <a class="nav-link " href="sources.html">Sources</a>
+      <a class="nav-link " href="commodities.html">Commodities</a>
+      <a class="nav-link " href="balance.html">Balance Details</a>
+      <a class="nav-link nav-btn" id="logoutButton">Logout</a>
+
+    </div>
+    <button class="open-btn" type="button" onclick="openNav()">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link " href="#" onclick="openModal(modalContentId='addExpenseModalContent')">Add Expense</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " href="sources.html">Sources</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " href="internal_transactions.html">Internal transactions</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " href="commodities.html">Commodities</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link " href="balance.html">Balance Details</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-btn" id="logoutButton">Logout</a>
-        </li>
-      </ul>
-    </div>
   </nav>
 
   <div class="container mt-3">

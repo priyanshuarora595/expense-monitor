@@ -13,8 +13,6 @@ let currYear = new Date().getFullYear();
 
 
 
-
-
 function login_redirect() {
     window.location.href = 'index.html';
     localStorage.clear();
@@ -55,6 +53,18 @@ function createYearDropdown() {
         if (year == currYear) yearOptions += `<option value="${year}" selected>${year}</option>`;
         else yearOptions += `<option value="${year}">${year}</option>`;
     }
+}
+
+function openNav() {
+    document.getElementById("mySidebar").style.width = "250px";
+    document.getElementById("mySidebar").style.overflow = "auto";
+    document.getElementsByClassName("page-content")[0].style.marginLeft = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidebar").style.width = "0";
+    document.getElementById("mySidebar").style.overflow = "hidden";
+    document.getElementsByClassName("page-content")[0].style.marginLeft = "0";
 }
 
 
@@ -885,7 +895,6 @@ function addSourceSave() {
             })
         }).then((response) => response.json()).then((data) => {
             if (data.id) {
-
                 document.getElementById("modal-message").style.color = 'green';
                 document.getElementById("modal-message").textContent = 'Success!!';
             } else {
@@ -895,6 +904,7 @@ function addSourceSave() {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_sources();
+                closeModal();
             }, 1500);
         }).catch((error) => {
             document.getElementById("modal-message").style.color = 'red';
@@ -940,6 +950,7 @@ function editSourceSave(id) {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_sources();
+                closeModal();
             }, 1500);
         }).catch((error) => {
             document.getElementById("modal-message").style.color = 'red';
@@ -963,6 +974,7 @@ function deleteSourceSave(id) {
         if (data.status == 204) {
             document.getElementById("modal-message").style.color = 'green';
             document.getElementById("modal-message").textContent = 'Success!!';
+
         } else {
             data = data.json();
             document.getElementById("modal-message").style.color = 'red';
@@ -971,6 +983,7 @@ function deleteSourceSave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_sources();
+            closeModal();
         }, 1500);
     }).catch((error) => {
         document.getElementById("modal-message").style.color = 'red';
@@ -1013,6 +1026,7 @@ function addCommoditySave() {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_commodities();
+                closeModal();
             }, 1500);
         }).catch((error) => {
             document.getElementById("modal-message").style.color = 'red';
@@ -1056,6 +1070,7 @@ function editCommoditySave(id) {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_commodities();
+                closeModal();
             }, 1500);
         }).catch((error) => {
             document.getElementById("modal-message").style.color = 'red';
@@ -1087,6 +1102,7 @@ function deleteCommoditySave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_commodities();
+            closeModal();
         }, 1500);
     }).catch((error) => {
         document.getElementById("modal-message").style.color = 'red';
@@ -1124,6 +1140,7 @@ function addExpenseSave() {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_expense_data();
+            closeModal();
         }, 1500);
     }).catch((error) => {
         document.getElementById("modal-message").style.color = 'red';
@@ -1162,6 +1179,7 @@ function editExpenseSave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_expense_data();
+            closeModal();
         }, 1500);
     }).catch((error) => {
         document.getElementById("modal-message").style.color = 'red';
@@ -1192,6 +1210,7 @@ function deleteExpenseSave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_expense_data();
+            closeModal();
         }, 1500);
     }).catch((error) => {
         document.getElementById("modal-message").style.color = 'red';
@@ -1324,6 +1343,8 @@ function addBlanaceSave() {
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
                 setTimeout(function () {
                     document.getElementById('modal-message').textContent = '';
+                    fetch_balance_data();
+                    closeModal();
                 }, 1500);
             }
 
@@ -1380,6 +1401,7 @@ function editBalanceSave(id) {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_balance_data();
+                closeModal();
             }, 1500);
         }).catch((error) => {
             document.getElementById("modal-message").style.color = 'red';
@@ -1411,6 +1433,7 @@ function deleteBalanceSave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_balance_data();
+            closeModal();
         }, 1500);
     }).catch((error) => {
         document.getElementById("modal-message").style.color = 'red';
@@ -1631,40 +1654,43 @@ function addInternalTransactionSave() {
             document.getElementById('modal-message').textContent = '';
         }, 1500);
     }
+    else {
 
-    fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/internalTransactions/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Token ${userToken}`
-        },
-        body: JSON.stringify({
-            date: document.getElementById("addInternalTransactionDate").value,
-            source: transfer_from,
-            destination: transfer_to,
-            amount: document.getElementById("addInternalTransactionAmount").value,
-            comments: document.getElementById("addInternalTransactionComments").value
-        })
-    }).then((response) => response.json()).then((data) => {
-        if (data.id) {
-            document.getElementById("modal-message").style.color = 'green';
-            document.getElementById("modal-message").textContent = 'Success!!';
-        } else {
+        fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/internalTransactions/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                date: document.getElementById("addInternalTransactionDate").value,
+                source: transfer_from,
+                destination: transfer_to,
+                amount: document.getElementById("addInternalTransactionAmount").value,
+                comments: document.getElementById("addInternalTransactionComments").value
+            })
+        }).then((response) => response.json()).then((data) => {
+            if (data.id) {
+                document.getElementById("modal-message").style.color = 'green';
+                document.getElementById("modal-message").textContent = 'Success!!';
+            } else {
+                document.getElementById("modal-message").style.color = 'red';
+                document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
+            }
+            setTimeout(function () {
+                document.getElementById('modal-message').textContent = '';
+                fetch_internal_transations_data();
+                closeModal();
+            }, 1500);
+        }).catch((error) => {
             document.getElementById("modal-message").style.color = 'red';
-            document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
-        }
-        setTimeout(function () {
-            document.getElementById('modal-message').textContent = '';
-            fetch_internal_transations_data();
-        }, 1500);
-    }).catch((error) => {
-        document.getElementById("modal-message").style.color = 'red';
-        document.getElementById("modal-message").textContent =
-            "An error occurred during posting data. " + `${error}`;
-        setTimeout(function () {
-            document.getElementById('modal-message').textContent = '';
-        }, 1500);
-    });
+            document.getElementById("modal-message").textContent =
+                "An error occurred during posting data. " + `${error}`;
+            setTimeout(function () {
+                document.getElementById('modal-message').textContent = '';
+            }, 1500);
+        });
+    }
 }
 
 function editInternalTransactionSave(id) {
@@ -1692,6 +1718,7 @@ function editInternalTransactionSave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_internal_transations_data();
+            closeModal();
         }, 1500);
     }).catch((error) => {
         document.getElementById("modal-message").style.color = 'red';
@@ -1722,6 +1749,7 @@ function deleteInternalTransactionSave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_internal_transations_data();
+            closeModal();
         }, 1500);
     }).catch((error) => {
         document.getElementById("modal-message").style.color = 'red';
