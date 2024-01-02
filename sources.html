@@ -92,20 +92,7 @@
             }
         }
 
-        async function load_sources() {
-            sourcesList = await fetch_sources(userToken = userToken);
-            const tableBody = document.querySelector('#SourcesTable tbody');
-
-            sourcesList.forEach((source, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                  <td>${source.name}</td>
-                  <td><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editSourceModalContent',${index},sources=sourcesList)><i class="fas fa-edit"></i></a></td>
-                  <td><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteSourceModalContent',${index},sources=sourcesList)><i class="fas fa-trash-alt"></i></a></td> 
-                  `;
-                tableBody.appendChild(row);
-            });
-        }
+        
     </script>
 </body>
 

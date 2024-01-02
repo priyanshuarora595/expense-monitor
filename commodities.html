@@ -94,20 +94,7 @@
             }
         }
 
-        async function load_commodities() {
-            commoditiesList = await fetch_commodities(userToken = userToken);
-            const tableBody = document.querySelector('#CommodityTable tbody');
-
-            commoditiesList.forEach((commodity, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                  <td>${commodity.name}</td>
-                  <td><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editCommodityModalContent',${index},commodities=commoditiesList)><i class="fas fa-edit"></i></a></td>
-                  <td><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteCommodityModalContent',${index},commodities=commoditiesList)><i class="fas fa-trash-alt"></i></a></td> 
-                  `;
-                tableBody.appendChild(row);
-            });
-        }
+        
     </script>
 </body>
 

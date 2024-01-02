@@ -798,45 +798,9 @@ function populateTransactionTable(transactions) {
     });
 }
 
-async function fetch_commodities(userToken) {
-    try {
-        const response = await fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/commodities/", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Token ${userToken}`
-            }
-        });
 
-        if (response.status == 200) {
-            const data = await response.json();
-            commoditiesList = data;
-            return data;
-        }
-        else if (response.status == 401) {
-            login_redirect();
-        }
-        else {
-            const data = await response.json();
-            document.getElementById("message").style.color = 'red';
-            document.getElementById("message").textContent =
-                "An error occurred during fetching data. ";
-            setTimeout(function () {
-                document.getElementById('message').textContent = '';
-            }, 1500);
-        }
-    } catch (error) {
-        document.getElementById("message").style.color = 'red';
-        document.getElementById("message").textContent =
-            "An error occurred during fetching data. " + `${error}`;
-        setTimeout(function () {
-            document.getElementById('message').textContent = '';
-        }, 1500);
-    }
 
-}
-
-async function fetch_sources(userToken) {
+async function fetch_sources() {
     try {
         const response = await fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/sources/", {
             method: "GET",
@@ -869,6 +833,22 @@ async function fetch_sources(userToken) {
             document.getElementById('message').textContent = '';
         }, 1500);
     }
+}
+
+async function load_sources() {
+    sourcesList = await fetch_sources(userToken = userToken);
+    const tableBody = document.querySelector('#SourcesTable tbody');
+    tableBody.innerHTML='';
+
+    sourcesList.forEach((source, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${source.name}</td>
+          <td><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editSourceModalContent',${index},sources=sourcesList)><i class="fas fa-edit"></i></a></td>
+          <td><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteSourceModalContent',${index},sources=sourcesList)><i class="fas fa-trash-alt"></i></a></td> 
+          `;
+        tableBody.appendChild(row);
+    });
 }
 
 function addSourceSave() {
@@ -904,6 +884,7 @@ function addSourceSave() {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_sources();
+                load_sources();
                 closeModal();
             }, 1500);
         }).catch((error) => {
@@ -950,6 +931,7 @@ function editSourceSave(id) {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_sources();
+                load_sources();
                 closeModal();
             }, 1500);
         }).catch((error) => {
@@ -983,6 +965,7 @@ function deleteSourceSave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_sources();
+            load_sources();
             closeModal();
         }, 1500);
     }).catch((error) => {
@@ -994,6 +977,61 @@ function deleteSourceSave(id) {
         }, 1500);
     });
 };
+
+
+async function fetch_commodities() {
+    try {
+        const response = await fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/commodities/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            }
+        });
+
+        if (response.status == 200) {
+            const data = await response.json();
+            commoditiesList = data;
+            return data;
+        }
+        else if (response.status == 401) {
+            login_redirect();
+        }
+        else {
+            const data = await response.json();
+            document.getElementById("message").style.color = 'red';
+            document.getElementById("message").textContent =
+                "An error occurred during fetching data. ";
+            setTimeout(function () {
+                document.getElementById('message').textContent = '';
+            }, 1500);
+        }
+    } catch (error) {
+        document.getElementById("message").style.color = 'red';
+        document.getElementById("message").textContent =
+            "An error occurred during fetching data. " + `${error}`;
+        setTimeout(function () {
+            document.getElementById('message').textContent = '';
+        }, 1500);
+    }
+
+}
+
+async function load_commodities() {
+    commoditiesList = await fetch_commodities(userToken = userToken);
+    const tableBody = document.querySelector('#CommodityTable tbody');
+    tableBody.innerHTML='';
+
+    commoditiesList.forEach((commodity, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${commodity.name}</td>
+          <td><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editCommodityModalContent',${index},commodities=commoditiesList)><i class="fas fa-edit"></i></a></td>
+          <td><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteCommodityModalContent',${index},commodities=commoditiesList)><i class="fas fa-trash-alt"></i></a></td> 
+          `;
+        tableBody.appendChild(row);
+    });
+}
 
 function addCommoditySave() {
     const commodity_name = document.getElementById("addCommodity").value;
@@ -1026,6 +1064,7 @@ function addCommoditySave() {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_commodities();
+                load_commodities();
                 closeModal();
             }, 1500);
         }).catch((error) => {
@@ -1070,6 +1109,7 @@ function editCommoditySave(id) {
             setTimeout(function () {
                 document.getElementById('modal-message').textContent = '';
                 fetch_commodities();
+                load_commodities();
                 closeModal();
             }, 1500);
         }).catch((error) => {
@@ -1102,6 +1142,7 @@ function deleteCommoditySave(id) {
         setTimeout(function () {
             document.getElementById('modal-message').textContent = '';
             fetch_commodities();
+            load_commodities();
             closeModal();
         }, 1500);
     }).catch((error) => {
@@ -1286,6 +1327,7 @@ function populateBalanceTable(balances_data) {
 
     balances_data.forEach((transaction, index) => {
         const row = document.createElement('tr');
+        console.log(transaction.month);
         row.innerHTML = `
       <td>${transaction.year}</td>
       <td>${transaction.month}</td>
@@ -1863,7 +1905,7 @@ function updatePassword() {
     const new_password = document.getElementById("password2").value;
 
     fetch(`https://priyanshuarora.pythonanywhere.com/api/accounts/change-password/`, {
-        method: "GET",
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Token ${userToken}`
@@ -1876,6 +1918,7 @@ function updatePassword() {
         if (data.message) {
             document.getElementById("message").style.color = 'green';
             document.getElementById("message").textContent = "Success! " + data.message;
+            logout();
 
         } else {
             document.getElementById("message").style.color = 'red';
@@ -1885,14 +1928,14 @@ function updatePassword() {
             document.getElementById('message').textContent = '';
             document.getElementById("password1").value = '';
             document.getElementById("password2").value = '';
-        }, 1500);
+        }, 3000);
     }).catch((error) => {
         document.getElementById("message").style.color = 'red';
         document.getElementById("message").textContent =
             "An error occurred during posting data. " + `${error}`;
         setTimeout(function () {
             document.getElementById('message').textContent = '';
-        }, 1500);
+        }, 3000);
     });
 }
 
