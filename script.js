@@ -1779,3 +1779,120 @@ function filterInternalTransactionSubmitSave() {
     });
 
 }
+
+function fetch_profile() {
+    fetch(`https://priyanshuarora.pythonanywhere.com/api/accounts/profile/${userID}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${userToken}`
+        }
+    }).then((response) => response.json()).then((data) => {
+        if (data.id) {
+            populateProfile(data);
+        } else {
+            document.getElementById("message").style.color = 'red';
+            document.getElementById("message").textContent = data[(Object.keys(data))[0]];
+        }
+        setTimeout(function () {
+            document.getElementById('message').textContent = '';
+        }, 1500);
+    }).catch((error) => {
+        document.getElementById("message").style.color = 'red';
+        document.getElementById("message").textContent =
+            "An error occurred during posting data. " + `${error}`;
+        setTimeout(function () {
+            document.getElementById('message').textContent = '';
+        }, 1500);
+    });
+}
+
+function populateProfile(data) {
+    document.getElementById("username").value = data.username;
+    document.getElementById("email").value = data.email;
+    document.getElementById("firstName").value = data.fname;
+    document.getElementById("lastName").value = data.lname;
+    document.getElementById("gender").value = data.gender;
+}
+
+function updateProfile() {
+    const email = document.getElementById("email").value;
+    const firstName = document.getElementById("firstName").value;
+    const lastName = document.getElementById("lastName").value;
+    const gender = document.getElementById("gender").value;
+
+
+
+    fetch(`https://priyanshuarora.pythonanywhere.com/api/accounts/profile/${userID}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${userToken}`
+        },
+        body: JSON.stringify({
+            email: email,
+            fname: firstName,
+            lname: lastName,
+            gender: gender
+        })
+    }).then((response) => response.json()).then((data) => {
+        console.log(data);
+        if (data.id) {
+            document.getElementById("message").style.color = 'green';
+            document.getElementById("message").textContent = 'Success!!';
+        } else {
+            document.getElementById("message").style.color = 'red';
+            document.getElementById("message").textContent = data[(Object.keys(data))[0]];
+        }
+        setTimeout(function () {
+            document.getElementById('message').textContent = '';
+        }, 1500);
+    }).catch((error) => {
+        document.getElementById("message").style.color = 'red';
+        document.getElementById("message").textContent =
+            "An error occurred during posting data. " + `${error}`;
+        setTimeout(function () {
+            document.getElementById('message').textContent = '';
+        }, 1500);
+    });
+
+}
+
+function updatePassword() {
+    const current_password = document.getElementById("password1").value;
+    const new_password = document.getElementById("password2").value;
+
+    fetch(`https://priyanshuarora.pythonanywhere.com/api/accounts/change-password/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${userToken}`
+        },
+        body: JSON.stringify({
+            current_password: current_password,
+            new_password: new_password,
+        })
+    }).then((response) => response.json()).then((data) => {
+        if (data.message) {
+            document.getElementById("message").style.color = 'green';
+            document.getElementById("message").textContent = "Success! " + data.message;
+
+        } else {
+            document.getElementById("message").style.color = 'red';
+            document.getElementById("message").textContent = data[(Object.keys(data))[0]];
+        }
+        setTimeout(function () {
+            document.getElementById('message').textContent = '';
+            document.getElementById("password1").value = '';
+            document.getElementById("password2").value = '';
+        }, 1500);
+    }).catch((error) => {
+        document.getElementById("message").style.color = 'red';
+        document.getElementById("message").textContent =
+            "An error occurred during posting data. " + `${error}`;
+        setTimeout(function () {
+            document.getElementById('message').textContent = '';
+        }, 1500);
+    });
+}
+

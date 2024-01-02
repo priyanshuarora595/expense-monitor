@@ -142,3 +142,8 @@ tr:hover {
   margin-left: 0;
   transition: margin-left 0.5s;
 }
+
+.delete-account {
+  color: red;
+  cursor: pointer;
+}
