@@ -7,6 +7,7 @@ let commoditiesList = '';
 let balancesList = '';
 let internalTransactionsData = '';
 let yearOptions = `<option value="">-----------</option>`;
+let last_req_url = ``;
 
 let maxDate = (new Date().getFullYear()) + "-" + (new Date().getMonth() + 1);
 let currYear = new Date().getFullYear();
@@ -741,6 +742,7 @@ function updateButtonStates(previousUrl, nextUrl) {
 }
 
 async function fetch_expense_data(url = "https://priyanshuarora.pythonanywhere.com/api/expenses/") {
+    last_req_url = url;
     try {
         const response = await fetch(url, {
             method: "GET",
@@ -800,9 +802,9 @@ function populateTransactionTable(transactions) {
 
 
 
-async function fetch_sources() {
+async function fetch_sources(url = "https://priyanshuarora.pythonanywhere.com/api/expenses/sources/") {
     try {
-        const response = await fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/sources/", {
+        const response = await fetch(url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -812,6 +814,7 @@ async function fetch_sources() {
         if (response.status == 200) {
             const data = await response.json();
             sourcesList = data;
+
             return data;
         }
         else if (response.status == 401) {
@@ -836,9 +839,9 @@ async function fetch_sources() {
 }
 
 async function load_sources() {
-    sourcesList = await fetch_sources(userToken = userToken);
+    sourcesList = await fetch_sources();
     const tableBody = document.querySelector('#SourcesTable tbody');
-    tableBody.innerHTML='';
+    tableBody.innerHTML = '';
 
     sourcesList.forEach((source, index) => {
         const row = document.createElement('tr');
@@ -1020,7 +1023,7 @@ async function fetch_commodities() {
 async function load_commodities() {
     commoditiesList = await fetch_commodities(userToken = userToken);
     const tableBody = document.querySelector('#CommodityTable tbody');
-    tableBody.innerHTML='';
+    tableBody.innerHTML = '';
 
     commoditiesList.forEach((commodity, index) => {
         const row = document.createElement('tr');
@@ -1284,6 +1287,7 @@ function filterExpenseSubmitSave() {
 
 
 async function fetch_balance_data(url = "https://priyanshuarora.pythonanywhere.com/api/balances/") {
+    last_req_url = url;
     try {
         const response = await fetch(url, {
             method: "GET",
@@ -1626,6 +1630,7 @@ function populateBalanceDetails(data) {
 }
 
 async function fetch_internal_transations_data(url = `https://priyanshuarora.pythonanywhere.com/api/expenses/internalTransactions/`) {
+    last_req_url = url;
     try {
         const response = await fetch(url, {
             method: "GET",
@@ -1939,3 +1944,47 @@ function updatePassword() {
     });
 }
 
+
+
+function export_data(model) {
+
+    let url = '';
+    if (last_req_url.includes("?")){
+        url = last_req_url+"&disable_pagination=true&export=true"
+    }
+    else{
+        url = last_req_url+"?disable_pagination=true&export=true"
+    }
+    console.log(url);
+    fetch(url,{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${userToken}`
+        }
+    }).then(response => {
+        // Check if the request was successful (status code 200)
+        if (response.ok) {
+            // Trigger the download
+            return response.blob();
+        } else {
+            // Handle the error
+            throw new Error('Failed to download Excel file');
+        }
+    })
+    .then(blob => {
+        // Create a link element and simulate a click to trigger the download
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'my_file.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+        // Handle the error
+        console.error(error);
+    });
+}

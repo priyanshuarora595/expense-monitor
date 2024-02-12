@@ -40,6 +40,7 @@
         <li><button class="prev" disabled id="prev-btn">Previous</button></li>
         <li><button class="prev" id="filter-btn"
             onclick="openModal(modalContentId='filterExpenseModalContent')">Filter</button></li>
+        <li><button class="next" id="Export_btn" onclick="export_data()">Export</button></li>
         <li><button class="next" disabled id="clear-filter-btn">Clear filter</button></li>
         <li><button class="next" disabled id="next-btn">Next</button></li>
       </ul>
@@ -105,8 +106,8 @@
       }
       else {
         check_user_logged_in();
-        await fetch_sources(userToken = userToken);
-        await fetch_commodities(userToken = userToken);
+        await fetch_sources();
+        await fetch_commodities();
         await fetch_expense_data();
       }
     }

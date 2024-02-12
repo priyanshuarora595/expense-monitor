@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
-    <title>Balance</title>
+    <title>Internal Transactions</title>
 </head>
 
 <body onload="check_perm()">
@@ -39,7 +39,9 @@
             <ul class="pagination">
                 <li><button class="prev" disabled id="prev-btn">Previous</button></li>
                 <li><button class="prev" id="filter-btn"
-                        onclick="openModal(modalContentId='filterInternalTransactionModalContent')">Filter</button></li>
+                        onclick="openModal(modalContentId='filterInternalTransactionModalContent')">Filter</button>
+                </li>
+                <li><button class="next" id="Export_btn" onclick="export_data()">Export</button></li>
                 <li><button class="next" disabled id="clear-filter-btn">Clear filter</button></li>
                 <li><button class="next" disabled id="next-btn">Next</button></li>
             </ul>
@@ -101,7 +103,7 @@
             }
             else {
                 check_user_logged_in();
-                await fetch_sources(userToken = userToken);
+                await fetch_sources();
                 await fetch_internal_transations_data();
 
             }
