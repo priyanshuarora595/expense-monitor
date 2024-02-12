@@ -1331,7 +1331,7 @@ function populateBalanceTable(balances_data) {
 
     balances_data.forEach((transaction, index) => {
         const row = document.createElement('tr');
-        console.log(transaction.month);
+        // console.log(transaction.month);
         row.innerHTML = `
       <td>${transaction.year}</td>
       <td>${transaction.month}</td>
@@ -1883,7 +1883,7 @@ function updateProfile() {
             gender: gender
         })
     }).then((response) => response.json()).then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.id) {
             document.getElementById("message").style.color = 'green';
             document.getElementById("message").textContent = 'Success!!';
@@ -1955,7 +1955,7 @@ function export_data(model) {
     else{
         url = last_req_url+"?disable_pagination=true&export=true"
     }
-    console.log(url);
+    // console.log(url);
     fetch(url,{
         method: "GET",
         headers: {
