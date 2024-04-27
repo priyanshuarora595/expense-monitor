@@ -1160,6 +1160,10 @@ function deleteCommoditySave(id) {
 };
 
 function addExpenseSave() {
+    if (document.getElementById("addExpenseCommodity").value != "" &&
+        document.getElementById("addExpenseAmount").value != "" &&
+        document.getElementById("addExpenseComments").value !="")
+    {
     fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/", {
         method: "POST",
         headers: {
@@ -1195,6 +1199,21 @@ function addExpenseSave() {
             document.getElementById('modal-message').textContent = '';
         }, 1500);
     });
+}
+else{
+    if(document.getElementById("addExpenseCommodity").value == ""){
+        document.getElementById("modal-message").style.color = 'red';
+        document.getElementById("modal-message").textContent = "Commodity value can't be blank";
+    }
+    if(document.getElementById("addExpenseAmount").value == ""){
+        document.getElementById("modal-message").style.color = 'red';
+        document.getElementById("modal-message").textContent = "Commodity value can't be blank";
+    }
+    if(document.getElementById("addExpenseComments").value == ""){
+        document.getElementById("modal-message").style.color = 'red';
+        document.getElementById("modal-message").textContent = "Commodity value can't be blank";
+    }
+}
 
 };
 
@@ -1948,13 +1967,13 @@ function updatePassword() {
 function export_data(model) {
 
     let url = '';
-    if (last_req_url.includes("?")){
-        url = last_req_url+"&disable_pagination=true&export=true"
+    if (last_req_url.includes("?")) {
+        url = last_req_url + "&disable_pagination=true&export=true"
     }
-    else{
-        url = last_req_url+"?disable_pagination=true&export=true"
+    else {
+        url = last_req_url + "?disable_pagination=true&export=true"
     }
-    fetch(url,{
+    fetch(url, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -1970,19 +1989,19 @@ function export_data(model) {
             throw new Error('Failed to download Excel file');
         }
     })
-    .then(blob => {
-        // Create a link element and simulate a click to trigger the download
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'my_file.xlsx';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    })
-    .catch(error => {
-        // Handle the error
-        console.error(error);
-    });
+        .then(blob => {
+            // Create a link element and simulate a click to trigger the download
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my_file.xlsx';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            // Handle the error
+            console.error(error);
+        });
 }

@@ -1,173 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
     <title>Profile - Expense Manager</title>
-</head>
+  </head>
 
-<body onload="check_perm()">
+  <body onload="check_perm()">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Expense Manager</a>
-        <div id="mySidebar" class="sidebar">
-            <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
+      <a class="navbar-brand" href="#">Expense Manager</a>
+      <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()"
+          >×</a
+        >
 
-            <a class="nav-link " href="dashboard.html">Dashboard</a>
-            <a class="nav-link " href="internal_transactions.html">Internal transactions</a>
-            <a class="nav-link " href="sources.html">Sources</a>
-            <a class="nav-link " href="commodities.html">Commodities</a>
-            <a class="nav-link " href="balance.html">Balance Details</a>
-            <a class="nav-link nav-btn" id="logoutButton">Logout</a>
-
-        </div>
-        <button class="open-btn" type="button" onclick="openNav()">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <a class="nav-link" href="dashboard.html">Dashboard</a>
+        <a class="nav-link" href="internal_transactions.html"
+          >Internal transactions</a
+        >
+        <a class="nav-link" href="sources.html">Sources</a>
+        <a class="nav-link" href="commodities.html">Commodities</a>
+        <a class="nav-link" href="balance.html">Balance Details</a>
+        <a class="nav-link nav-btn" id="logoutButton">Logout</a>
+      </div>
+      <button class="open-btn" type="button" onclick="openNav()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
     </nav>
 
-
     <div class="container mt-3">
-        <h2>Welcome to Your Profile</h2>
-        <h3>Your Information</h3>
+      <h2>Welcome to Your Profile</h2>
+      <h3>Your Information</h3>
 
-        <p id="message"></p>
-        <form id="updateProfile">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Enter username" required readonly />
-            </div>
+      <p id="message"></p>
+      <form id="updateProfile">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            placeholder="Enter username"
+            required
+            readonly
+          />
+        </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="Enter email" required />
-            </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="Enter email"
+            required
+          />
+        </div>
 
-            <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" class="form-control" id="firstName" placeholder="Enter first name" required />
-            </div>
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="firstName"
+            placeholder="Enter first name"
+            required
+          />
+        </div>
 
-            <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" class="form-control" id="lastName" placeholder="Enter last name" required />
-            </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="lastName"
+            placeholder="Enter last name"
+            required
+          />
+        </div>
 
-            <div class="form-group">
-                <label for="gender">Gender</label>
-                <select class="form-control" id="gender" required>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select class="form-control" id="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
 
-            <button type="button" class="btn btn-primary" onclick="updateProfile()">
-                Update
-            </button>
-        </form>
+        <button type="button" class="btn btn-primary" onclick="updateProfile()">
+          Update
+        </button>
+      </form>
 
-        <form id="changePasswordForm">
-            <h3 class="mt-5">Change Password</h3>
-            <div class="form-group">
-                <label for="password1">Current Password</label>
-                <input type="password" class="form-control" id="password1" placeholder="Enter Current password"
-                    required />
-            </div>
+      <form id="changePasswordForm">
+        <h3 class="mt-5">Change Password</h3>
+        <div class="form-group">
+          <label for="password1">Current Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password1"
+            placeholder="Enter Current password"
+            required
+          />
+        </div>
 
-            <div class="form-group">
-                <label for="password2">New Password</label>
-                <input type="password" class="form-control" id="password2" placeholder="Enter New password" required />
-            </div>
+        <div class="form-group">
+          <label for="password2">New Password</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password2"
+            placeholder="Enter New password"
+            required
+          />
+        </div>
 
-            <button type="button" class="btn btn-primary" onclick="updatePassword()">
-                Change Password
-            </button>
-        </form>
+        <button
+          type="button"
+          class="btn btn-primary"
+          onclick="updatePassword()"
+        >
+          Change Password
+        </button>
+      </form>
 
-        <h3 class="mt-5">Danger Zone</h3>
-        <form id="DeleteAccount">
-            <div class="form-group">
-                <p style="color: red;">This action can not be reversed</p>
-                <p>Please write <i>delete</i> in the given box to delete your account</p>
-                <label for="password1">Delete Account</label>
-                <input type="text" class="form-control" id="deleteAccount" placeholder="delete" required />
-            </div>
+      <h3 class="mt-5">Danger Zone</h3>
+      <form id="DeleteAccount">
+        <div class="form-group">
+          <p style="color: red">This action can not be reversed</p>
+          <p>
+            Please write <i>delete</i> in the given box to delete your account
+          </p>
+          <label for="password1">Delete Account</label>
+          <input
+            type="text"
+            class="form-control"
+            id="deleteAccount"
+            placeholder="delete"
+            required
+          />
+        </div>
 
-            <button type="button" class="btn btn-danger" onclick="deleteAccountFunc()">
-                Delete Account
-            </button>
-        </form>
-
-
+        <button
+          type="button"
+          class="btn btn-danger"
+          onclick="deleteAccountFunc()"
+        >
+          Delete Account
+        </button>
+      </form>
     </div>
-
-
-
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
-
-        document.getElementById("logoutButton").addEventListener("click", function () {
-            logout();
+      document
+        .getElementById("logoutButton")
+        .addEventListener("click", function () {
+          logout();
         });
 
-        async function check_perm() {
-            if (!check_user_logged_in()) {
-                window.location.href = 'index.html';
-            }
-            else {
-                check_user_logged_in();
-                //console.log(localStorage.getItem("userID"));
-                await fetch_profile();
-            }
+      async function check_perm() {
+        if (!check_user_logged_in()) {
+          window.location.href = "index.html";
+        } else {
+          check_user_logged_in();
+          //console.log(localStorage.getItem("userID"));
+          await fetch_profile();
         }
+      }
 
-        function deleteAccountFunc() {
-            const msg = document.getElementById("deleteAccount").value;
+      function deleteAccountFunc() {
+        const msg = document.getElementById("deleteAccount").value;
 
-            if (msg == 'delete') {
-                fetch(`https://priyanshuarora.pythonanywhere.com/api/accounts/profile/${userID}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Token ${userToken}`
-                    }
-                }).then((response) => {
-                    if (response.status == 204) {
-                        document.getElementById('message').textContent = 'Account Deleted Successfully !';
-                        setTimeout(function () {
-                            document.getElementById('message').textContent = '';
-                            logout();
-                        }, 3000);
-                    }
-                    else {
-                        document.getElementById('message').textContent = 'Error';
-                        setTimeout(function () {
-                            document.getElementById('message').textContent = 'Error';
-                        }, 3000);
-                    }
-                }).catch((error) => {
-                    document.getElementById("message").style.color = 'red';
-                    document.getElementById("message").textContent =
-                        "An error occurred during posting data. " + `${error}`;
-                    setTimeout(function () {
-                        document.getElementById('message').textContent = '';
-                    }, 1500);
-                });
+        if (msg == "delete") {
+          fetch(
+            `https://priyanshuarora.pythonanywhere.com/api/accounts/profile/${userID}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${userToken}`,
+              },
             }
+          )
+            .then((response) => {
+              if (response.status == 204) {
+                document.getElementById("message").textContent =
+                  "Account Deleted Successfully !";
+                setTimeout(function () {
+                  document.getElementById("message").textContent = "";
+                  logout();
+                }, 3000);
+              } else {
+                document.getElementById("message").textContent = "Error";
+                setTimeout(function () {
+                  document.getElementById("message").textContent = "Error";
+                }, 3000);
+              }
+            })
+            .catch((error) => {
+              document.getElementById("message").style.color = "red";
+              document.getElementById("message").textContent =
+                "An error occurred during posting data. " + `${error}`;
+              setTimeout(function () {
+                document.getElementById("message").textContent = "";
+              }, 1500);
+            });
         }
-
-
-
+      }
     </script>
-</body>
-
+  </body>
 </html>
