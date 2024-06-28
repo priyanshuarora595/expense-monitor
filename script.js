@@ -84,14 +84,16 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
         case "addExpenseModalContent":
             source_options = ``
             sourcesList.forEach(function (source) {
-                if (source.default == true) {
-                    source_options += `
-        <option value="${source.id}" selected>${source.name}</option>`;
-                }
-                else {
+                if (source.is_active) {
+                    if (source.default) {
+                        source_options += `
+                        <option value="${source.id}" selected>${source.name}</option>`;
+                    }
+                    else {
 
-                    source_options += `
-                    <option value="${source.id}">${source.name}</option>`;
+                        source_options += `
+                        <option value="${source.id}">${source.name}</option>`;
+                    }
                 }
             })
 
@@ -145,12 +147,15 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
         case 'editExpenseModalContent':
             source_options = ``
             sourcesList.forEach(function (source) {
-                if (source.id == transaction.source.id) {
-                    source_options += `
-      <option value="${source.id}" selected >${source.name}</option>`;
-                } else {
-                    source_options += `
-            <option value="${source.id}">${source.name}</option>`;
+                if (source.is_active) {
+
+                    if (source.id == transaction.source.id) {
+                        source_options += `
+                        <option value="${source.id}" selected >${source.name}</option>`;
+                    } else {
+                        source_options += `
+                        <option value="${source.id}">${source.name}</option>`;
+                    }
                 }
             });
 
@@ -227,8 +232,11 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
         case "filterExpenseModalContent":
             source_options = `<option value="">-------------</option>`
             sourcesList.forEach(function (source) {
-                source_options += `
-            <option value="${source.id}">${source.name}</option>`;
+                if (source.is_active) {
+
+                    source_options += `
+                    <option value="${source.id}">${source.name}</option>`;
+                }
             })
 
             commodity_options = `<option value="">-------------</option>`;
@@ -301,6 +309,14 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
                 default_input = `<input type="radio" name="editSourceDefault" value=true checked> Yes
                 <input type="radio" name="editSourceDefault"  value=false > No`
             }
+
+            var is_active_input = `<input type="radio" name="editSourceActive" value=true > Yes
+            <input type="radio" name="editSourceActive"  value=false checked> No`
+
+            if (sources[index].is_active == true) {
+                default_input = `<input type="radio" name="editSourceDefault" value=true checked> Yes
+                <input type="radio" name="editSourceDefault"  value=false > No`
+            }
             modalContent.innerHTML = `
           <form>
             <div class="form-group">
@@ -311,7 +327,11 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
             <div class="form-group">
                 <label for="editSourceDefault">Default :</label>`+
                 default_input
-                + `
+                +
+                `<label for="editSourceActive">Active :</label>` +
+                is_active_input
+                +
+                `
             </div>
           </form>`
             let editSourcebuttonClickHandler = () => {
@@ -370,8 +390,10 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
         case "addBalanceModalContent":
             source_options = ``
             sourcesList.forEach(function (source) {
-                source_options += `
-        <option value="${source.id}">${source.name}</option>`;
+                if (source.is_active) {
+                    source_options += `
+                    <option value="${source.id}">${source.name}</option>`;
+                }
             })
             modalContent.innerHTML = `
           <form>
@@ -404,12 +426,14 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
             let balance = balancesList[index];
             source_options = ``
             sourcesList.forEach(function (source) {
-                if (source.id == balance.source.id) {
-                    source_options += `
+                if (source.is_active) {
+                    if (source.id == balance.source.id) {
+                        source_options += `
       <option value="${source.id}" selected >${source.name}</option>`;
-                } else {
-                    source_options += `
+                    } else {
+                        source_options += `
             <option value="${source.id}">${source.name}</option>`;
+                    }
                 }
             });
 
@@ -461,8 +485,11 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
         case "filterBalanceModalContent":
             source_options = `<option value="">-------------</option>`
             sourcesList.forEach(function (source) {
-                source_options += `
-        <option value="${source.id}">${source.name}</option>`;
+                if (source.is_active) {
+
+                    source_options += `
+                    <option value="${source.id}">${source.name}</option>`;
+                }
             })
 
             modalContent.innerHTML = `
@@ -511,14 +538,16 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
         case "addInternalTransactionModalContent":
             source_options = ``
             sourcesList.forEach(function (source) {
-                if (source.default == true) {
-                    source_options += `
-        <option value="${source.id}" selected>${source.name}</option>`;
-                }
-                else {
+                if (source.is_active) {
+                    if (source.default == true) {
+                        source_options += `
+                        <option value="${source.id}" selected>${source.name}</option>`;
+                    }
+                    else {
 
-                    source_options += `
-                    <option value="${source.id}">${source.name}</option>`;
+                        source_options += `
+                        <option value="${source.id}">${source.name}</option>`;
+                    }
                 }
             })
 
@@ -565,23 +594,27 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
 
             from_options = ``
             sourcesList.forEach(function (source) {
-                if (source.id == transaction.source.id) {
-                    from_options += `
-      <option value="${source.id}" selected >${source.name}</option>`;
-                } else {
-                    from_options += `
-            <option value="${source.id}">${source.name}</option>`;
+                if (source.is_active) {
+                    if (source.id == transaction.source.id) {
+                        from_options += `
+                        <option value="${source.id}" selected >${source.name}</option>`;
+                    } else {
+                        from_options += `
+                        <option value="${source.id}">${source.name}</option>`;
+                    }
                 }
             });
 
             to_options = ``
             sourcesList.forEach(function (dest) {
-                if (dest.id == transaction.destination.id) {
-                    to_options += `
+                if (dest.is_active) {
+                    if (dest.id == transaction.destination.id) {
+                        to_options += `
       <option value="${dest.id}" selected >${dest.name}</option>`;
-                } else {
-                    to_options += `
+                    } else {
+                        to_options += `
             <option value="${dest.id}">${dest.name}</option>`;
+                    }
                 }
             });
             modalContent.innerHTML = `
@@ -634,16 +667,19 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
         case "filterInternalTransactionModalContent":
             from_options = `<option value="">-------------</option>`
             sourcesList.forEach(function (source) {
-                from_options += `
-            <option value="${source.id}">${source.name}</option>`;
+                if (source.is_active) {
+                    from_options += `
+                    <option value="${source.id}">${source.name}</option>`;
+                }
             }
             );
 
             to_options = `<option value="">-------------</option>`
             sourcesList.forEach(function (dest) {
-                to_options += `
-            <option value="${dest.id}">${dest.name}</option>`;
-
+                if (dest.is_active) {
+                    to_options += `
+                    <option value="${dest.id}">${dest.name}</option>`;
+                }
             });
             modalContent.innerHTML = `
             <form>
@@ -905,6 +941,7 @@ function addSourceSave() {
 function editSourceSave(id) {
     const source_name = document.getElementById("editSource").value;
     const is_source_default = document.querySelector('input[name="editSourceDefault"]:checked').value;
+    const is_active = document.querySelector('input[name="editSourceActive"]:checked').value;
     if (source_name == '') {
         document.getElementById("modal-message").style.color = 'red';
         document.getElementById("modal-message").textContent =
@@ -922,7 +959,8 @@ function editSourceSave(id) {
             },
             body: JSON.stringify({
                 name: source_name,
-                default: is_source_default
+                default: is_source_default,
+                is_active: is_active
             })
         }).then((response) => response.json()).then((data) => {
             if (data.id) {
@@ -1162,58 +1200,57 @@ function deleteCommoditySave(id) {
 function addExpenseSave() {
     if (document.getElementById("addExpenseCommodity").value != "" &&
         document.getElementById("addExpenseAmount").value != "" &&
-        document.getElementById("addExpenseComments").value !="")
-    {
-    fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Token ${userToken}`
-        },
-        body: JSON.stringify({
-            date: document.getElementById("addExpenseDate").value,
-            source: document.getElementById("addExpenseSource").value,
-            transaction_type: document.getElementById("addExpenseType").value,
-            amount: document.getElementById("addExpenseAmount").value,
-            commodity: document.getElementById("addExpenseCommodity").value,
-            comments: document.getElementById("addExpenseComments").value
-        })
-    }).then((response) => response.json()).then((data) => {
-        if (data.id) {
-            document.getElementById("modal-message").style.color = 'green';
-            document.getElementById("modal-message").textContent = 'Success!!';
-        } else {
+        document.getElementById("addExpenseComments").value != "") {
+        fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            },
+            body: JSON.stringify({
+                date: document.getElementById("addExpenseDate").value,
+                source: document.getElementById("addExpenseSource").value,
+                transaction_type: document.getElementById("addExpenseType").value,
+                amount: document.getElementById("addExpenseAmount").value,
+                commodity: document.getElementById("addExpenseCommodity").value,
+                comments: document.getElementById("addExpenseComments").value
+            })
+        }).then((response) => response.json()).then((data) => {
+            if (data.id) {
+                document.getElementById("modal-message").style.color = 'green';
+                document.getElementById("modal-message").textContent = 'Success!!';
+            } else {
+                document.getElementById("modal-message").style.color = 'red';
+                document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
+            }
+            setTimeout(function () {
+                document.getElementById('modal-message').textContent = '';
+                fetch_expense_data();
+                closeModal();
+            }, 1500);
+        }).catch((error) => {
             document.getElementById("modal-message").style.color = 'red';
-            document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
+            document.getElementById("modal-message").textContent =
+                "An error occurred during fetching data. " + `${error}`;
+            setTimeout(function () {
+                document.getElementById('modal-message').textContent = '';
+            }, 1500);
+        });
+    }
+    else {
+        if (document.getElementById("addExpenseCommodity").value == "") {
+            document.getElementById("modal-message").style.color = 'red';
+            document.getElementById("modal-message").textContent = "Commodity value can't be blank";
         }
-        setTimeout(function () {
-            document.getElementById('modal-message').textContent = '';
-            fetch_expense_data();
-            closeModal();
-        }, 1500);
-    }).catch((error) => {
-        document.getElementById("modal-message").style.color = 'red';
-        document.getElementById("modal-message").textContent =
-            "An error occurred during fetching data. " + `${error}`;
-        setTimeout(function () {
-            document.getElementById('modal-message').textContent = '';
-        }, 1500);
-    });
-}
-else{
-    if(document.getElementById("addExpenseCommodity").value == ""){
-        document.getElementById("modal-message").style.color = 'red';
-        document.getElementById("modal-message").textContent = "Commodity value can't be blank";
+        if (document.getElementById("addExpenseAmount").value == "") {
+            document.getElementById("modal-message").style.color = 'red';
+            document.getElementById("modal-message").textContent = "Commodity value can't be blank";
+        }
+        if (document.getElementById("addExpenseComments").value == "") {
+            document.getElementById("modal-message").style.color = 'red';
+            document.getElementById("modal-message").textContent = "Commodity value can't be blank";
+        }
     }
-    if(document.getElementById("addExpenseAmount").value == ""){
-        document.getElementById("modal-message").style.color = 'red';
-        document.getElementById("modal-message").textContent = "Commodity value can't be blank";
-    }
-    if(document.getElementById("addExpenseComments").value == ""){
-        document.getElementById("modal-message").style.color = 'red';
-        document.getElementById("modal-message").textContent = "Commodity value can't be blank";
-    }
-}
 
 };
 
