@@ -328,7 +328,9 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
                 <label for="editSourceDefault">Default :</label>`+
                 default_input
                 +
-                `<label for="editSourceActive">Active :</label>` +
+                `</div>
+            <div class="form-group">
+            <label for="editSourceActive">Active :</label>` +
                 is_active_input
                 +
                 `
