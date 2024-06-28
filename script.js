@@ -305,7 +305,7 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
 
             var default_input = `<input type="radio" name="editSourceDefault" value=true > Yes
             <input type="radio" name="editSourceDefault"  value=false checked> No`
-            if (sources[index].default == true) {
+            if (sources[index].default) {
                 default_input = `<input type="radio" name="editSourceDefault" value=true checked> Yes
                 <input type="radio" name="editSourceDefault"  value=false > No`
             }
@@ -313,9 +313,9 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
             var is_active_input = `<input type="radio" name="editSourceActive" value=true > Yes
             <input type="radio" name="editSourceActive"  value=false checked> No`
 
-            if (sources[index].is_active == true) {
-                default_input = `<input type="radio" name="editSourceDefault" value=true checked> Yes
-                <input type="radio" name="editSourceDefault"  value=false > No`
+            if (sources[index].is_active) {
+                is_active_input = `<input type="radio" name="editSourceActive" value=true checked> Yes
+                <input type="radio" name="editSourceActive"  value=false > No`
             }
             modalContent.innerHTML = `
           <form>
