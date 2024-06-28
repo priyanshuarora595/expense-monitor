@@ -1661,6 +1661,7 @@ function populateBalanceDetails(data) {
         <td>${source}</td>
         <td>${expenditure_data[source]['initial']}</td>
         <td>${expenditure_data[source]['credits']}</td>
+        <td>${expenditure_data[source]['internal_credits']}</td>
         <td>${expenditure_data[source]['debits']}</td>
         <td>${expenditure_data[source]['internal_transfer']}</td>
         <td>${expenditure_data[source]['remaining']}</td>
