@@ -35,7 +35,26 @@
 
     <div class="container mt-3">
         <h2>Welcome to Your Balances</h2>
-        <h3 id="message">Your Balances</h2>
+        <h2 id="message">Your Balances</h2>
+        <div id="search-range">
+            <h3 id="range">Balance details in a range</h3>
+            <form>
+                <div class="form-group">
+                    <label for="startMonthAndYear">Start Date:</label>
+                    <input type="month" id="startMonthAndYear" name="startMonthAndYear" >
+
+                    <label for="endMonthAndYear">End Date:</label>
+                    <input type="month" id="endMonthAndYear" name="endMonthAndYear" >
+
+                    <button id="search" disabled onclick="search_balance_detail_range()">Search</button>
+                    <a href='balanceDetailsRange.html' target='_blank'></a>
+                </div>
+            </form>
+
+        </div>
+
+        
+
             <ul class="pagination">
                 <li><button class="prev" disabled id="prev-btn">Previous</button></li>
                 <li><button class="prev" id="filter-btn"
@@ -97,6 +116,17 @@
             logout();
         });
 
+        monthInput = document.getElementById("startMonthAndYear");
+        var searchBtn = document.getElementById("search");
+        monthInput.addEventListener("input", function () {
+            // Check if the input field has a value
+            if (monthInput.value) {
+                searchBtn.disabled = false; // Enable the button
+            } else {
+                searchBtn.disabled = true;  // Keep the button disabled
+            }
+        })
+
         async function check_perm() {
             if (!check_user_logged_in()) {
                 window.location.href = 'index.html';
@@ -106,8 +136,23 @@
                 await fetch_sources();
                 await fetch_balance_data();
                 createYearDropdown();
-
+                document.getElementById("endMonthAndYear").value = maxDate;
+                document.getElementById("endMonthAndYear").max = maxDate;
+                document.getElementById("startMonthAndYear").max = maxDate;
             }
+        }
+
+        function search_balance_detail_range(){
+            var searchBtn = document.getElementById("search");
+            searchBtn = customRemoveEventListeners(searchBtn);
+            var startMonth = document.getElementById("startMonthAndYear").value.split("-")[1];
+            var endMonth = document.getElementById("endMonthAndYear").value.split("-")[1];
+            var startYear = document.getElementById("startMonthAndYear").value.split("-")[0];
+            var endYear = document.getElementById("endMonthAndYear").value.split("-")[0];
+            url = `${get_api_url()}/api/balances/details-range/?start_month=${startMonth}&start_year=${startYear}&end_month=${endMonth}&end_year=${endYear}`;
+            //console.log(url);
+            sessionStorage.setItem('url', url);
+            window.open("balanceDetailsRange.html","_blank");
         }
     </script>
 </body>
