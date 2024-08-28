@@ -9,11 +9,12 @@ let internalTransactionsData = '';
 let yearOptions = `<option value="">-----------</option>`;
 let last_req_url = ``;
 
-let maxDate = (new Date().getFullYear()) + "-" + (new Date().getMonth() + 1);
-let currYear = new Date().getFullYear();
+let currentDate = new Date();
+let maxDate = (currentDate.getFullYear()) + "-" + (currentDate.getMonth() + 1 < 10 ? '0' : '') + (currentDate.getMonth() + 1);
+let currYear = currentDate.getFullYear();
 
 let api_url = "https://priyanshuarora.pythonanywhere.com";
-// let api_url = "http://127.0.0.1:8000/";
+// let api_url = "http://127.0.0.1:8000";
 
 function get_api_url() {
     return api_url;
@@ -1636,20 +1637,80 @@ async function fetch_balance_detail(id) {
     }
 }
 
+async function fetch_balance_detail_range(url) {
+    try {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Token ${userToken}`
+            }
+        });
+        if (response.status == 200) {
+            const data = await response.json();
+            populateBalanceDetails(data);
+        }
+        else if (response.status == 401) {
+            login_redirect();
+        }
+        else {
+            document.getElementById("message").style.color = 'red';
+            document.getElementById('message').textContent = "error";
+            setTimeout(function () {
+                document.getElementById('message').textContent = '';
+            }, 1500);
+        }
+    }
+    catch (error) {
+        console.log(error)
+        document.getElementById("message").style.color = 'red';
+        document.getElementById("message").textContent =
+            "An error occurred during fetching data. " + `${error}`;
+        setTimeout(function () {
+            document.getElementById('message').textContent = '';
+        }, 1500);
+    }
+}
 function populateBalanceDetails(data) {
     const month = document.getElementById("month");
     const year = document.getElementById("year");
+    const startMonth = document.getElementById("start_month");
+    const startYear = document.getElementById("start_year");
+    const endMonth = document.getElementById("end_month");
+    const endYear = document.getElementById("end_year");
     const initial = document.getElementById("initial");
     const remaining = document.getElementById("remaining");
+    const remaining_amt = document.getElementById("remaining_amt");
     const total_credits = document.getElementById("total_credits");
     const total_debits = document.getElementById("total_debits");
     // const internal_transfers = document.getElementById("internal_transfers");
 
 
-    month.innerHTML = data['month'];
-    year.innerHTML = data['year'];
+    if (month) {
+        month.innerHTML = data['month'];
+    }
+    if (year) {
+        year.innerHTML = data['year'];
+    }
+    if (startMonth) {
+        startMonth.innerHTML = data['start_month'];
+    }
+    if (startYear) {
+        startYear.innerHTML = data['start_year'];
+    }
+    if (endMonth) {
+        endMonth.innerHTML = data['end_month'];
+    }
+    if (endYear) {
+        endYear.innerHTML = data['end_year'];
+    }
+    if (remaining) {
+        remaining.innerHTML = data['remaining'];
+    }
+    if (remaining_amt) {
+        remaining_amt.innerHTML = data['remaining'];
+    }
     initial.innerHTML = data['initial'];
-    remaining.innerHTML = data['remaining'];
     total_credits.innerHTML = data['total_credits'];
     total_debits.innerHTML = data['total_debits'];
     // internal_transfers.innerHTML = data['internal_transfers'];
