@@ -12,7 +12,12 @@ let last_req_url = ``;
 let maxDate = (new Date().getFullYear()) + "-" + (new Date().getMonth() + 1);
 let currYear = new Date().getFullYear();
 
+let api_url = "https://priyanshuarora.pythonanywhere.com";
+// let api_url = "http://127.0.0.1:8000/";
 
+function get_api_url() {
+    return api_url;
+}
 
 function login_redirect() {
     window.location.href = 'index.html';
@@ -780,7 +785,7 @@ function updateButtonStates(previousUrl, nextUrl) {
 
 }
 
-async function fetch_expense_data(url = "https://priyanshuarora.pythonanywhere.com/api/expenses/") {
+async function fetch_expense_data(url = `${get_api_url()}/api/expenses/`) {
     last_req_url = url;
     try {
         const response = await fetch(url, {
@@ -841,7 +846,7 @@ function populateTransactionTable(transactions) {
 
 
 
-async function fetch_sources(url = "https://priyanshuarora.pythonanywhere.com/api/expenses/sources/") {
+async function fetch_sources(url = `${get_api_url()}/api/expenses/sources/`) {
     try {
         const response = await fetch(url, {
             method: "GET",
@@ -905,7 +910,7 @@ function addSourceSave() {
         }, 1500);
     }
     else {
-        fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/sources/", {
+        fetch(`${get_api_url()}/api/expenses/sources/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -953,7 +958,7 @@ function editSourceSave(id) {
         }, 1500);
     }
     else {
-        fetch(`https://priyanshuarora.pythonanywhere.com/api/expenses/sources/${id}/`, {
+        fetch(`${get_api_url()}/api/expenses/sources/${id}/`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -990,7 +995,7 @@ function editSourceSave(id) {
 };
 
 function deleteSourceSave(id) {
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/expenses/sources/${id}/`, {
+    fetch(`${get_api_url()}/api/expenses/sources/${id}/`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -1025,7 +1030,7 @@ function deleteSourceSave(id) {
 
 async function fetch_commodities() {
     try {
-        const response = await fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/commodities/", {
+        const response = await fetch(`${get_api_url()}/api/expenses/commodities/`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -1088,7 +1093,7 @@ function addCommoditySave() {
         }, 1500);
     }
     else {
-        fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/commodities/", {
+        fetch(`${get_api_url()}/api/expenses/commodities/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1133,7 +1138,7 @@ function editCommoditySave(id) {
         }, 1500);
     }
     else {
-        fetch(`https://priyanshuarora.pythonanywhere.com/api/expenses/commodities/${id}/`, {
+        fetch(`${get_api_url()}/api/expenses/commodities/${id}/`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -1168,7 +1173,7 @@ function editCommoditySave(id) {
 };
 
 function deleteCommoditySave(id) {
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/expenses/commodities/${id}/`, {
+    fetch(`${get_api_url()}/api/expenses/commodities/${id}/`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -1203,7 +1208,7 @@ function addExpenseSave() {
     if (document.getElementById("addExpenseCommodity").value != "" &&
         document.getElementById("addExpenseAmount").value != "" &&
         document.getElementById("addExpenseComments").value != "") {
-        fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/", {
+        fetch(`${get_api_url()}/api/expenses/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1257,7 +1262,7 @@ function addExpenseSave() {
 };
 
 function editExpenseSave(id) {
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/expenses/${id}/`, {
+    fetch(`${get_api_url()}/api/expenses/${id}/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -1295,7 +1300,7 @@ function editExpenseSave(id) {
 };
 
 function deleteExpenseSave(id) {
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/expenses/${id}/`, {
+    fetch(`${get_api_url()}/api/expenses/${id}/`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -1332,7 +1337,7 @@ function filterExpenseSubmitSave() {
     var transaction_type = document.getElementById("filterTransactionType").value;
     var source = document.getElementById("filterSource").value;
     var date = document.getElementById("filterMonthAndYear").value;
-    url = `https://priyanshuarora.pythonanywhere.com/api/expenses/?commodity=${commodity}&transaction_type=${transaction_type}&date=${date}&source=${source}`;
+    url = `${get_api_url()}/api/expenses/?commodity=${commodity}&transaction_type=${transaction_type}&date=${date}&source=${source}`;
     fetch_expense_data(url);
     closeModal();
     clearFilterBtn.disabled = false;
@@ -1345,7 +1350,7 @@ function filterExpenseSubmitSave() {
 
 
 
-async function fetch_balance_data(url = "https://priyanshuarora.pythonanywhere.com/api/balances/") {
+async function fetch_balance_data(url = `${get_api_url()}/api/balances/`) {
     last_req_url = url;
     try {
         const response = await fetch(url, {
@@ -1421,7 +1426,7 @@ function addBlanaceSave() {
             document.getElementById('modal-message').textContent = '';
         }, 1500);
     } else {
-        fetch("https://priyanshuarora.pythonanywhere.com/api/balances/", {
+        fetch(`${get_api_url()}/api/balances/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1481,7 +1486,7 @@ function editBalanceSave(id) {
         }, 1500);
     }
     else {
-        fetch(`https://priyanshuarora.pythonanywhere.com/api/balances/${id}/`, {
+        fetch(`${get_api_url()}/api/balances/${id}/`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -1519,7 +1524,7 @@ function editBalanceSave(id) {
 }
 
 function deleteBalanceSave(id) {
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/balances/${id}/`, {
+    fetch(`${get_api_url()}/api/balances/${id}/`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -1555,7 +1560,7 @@ function filterBalanceSubmitSave() {
     var source = document.getElementById("filterBalanceSource").value;
     var year = document.getElementById("filterBalanceYear").value;
     var month = document.getElementById("filterBalanceMonth").value;
-    url = `https://priyanshuarora.pythonanywhere.com/api/balances/?year=${year}&month=${month}&source=${source}`;
+    url = `${get_api_url()}/api/balances/?year=${year}&month=${month}&source=${source}`;
     fetch_balance_data(url);
     closeModal();
     clearFilterBtn.disabled = false;
@@ -1570,7 +1575,7 @@ function filterBalanceSubmitSave() {
 function logout() {
     if (check_user_logged_in() == true) {
         userToken = localStorage.getItem("userToken");
-        fetch("https://priyanshuarora.pythonanywhere.com/api/logout/", {
+        fetch(`${get_api_url()}/api/logout/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1598,7 +1603,7 @@ function logout() {
 
 async function fetch_balance_detail(id) {
     try {
-        const response = await fetch(`https://priyanshuarora.pythonanywhere.com/api/balances/details/${id}/`, {
+        const response = await fetch(`${get_api_url()}/api/balances/details/${id}/`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -1688,7 +1693,7 @@ function populateBalanceDetails(data) {
     )
 }
 
-async function fetch_internal_transations_data(url = `https://priyanshuarora.pythonanywhere.com/api/expenses/internalTransactions/`) {
+async function fetch_internal_transations_data(url = `${get_api_url()}/api/expenses/internalTransactions/`) {
     last_req_url = url;
     try {
         const response = await fetch(url, {
@@ -1762,7 +1767,7 @@ function addInternalTransactionSave() {
     }
     else {
 
-        fetch("https://priyanshuarora.pythonanywhere.com/api/expenses/internalTransactions/", {
+        fetch(`${get_api_url()}/api/expenses/internalTransactions/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -1800,7 +1805,7 @@ function addInternalTransactionSave() {
 }
 
 function editInternalTransactionSave(id) {
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/expenses/internalTransactions/${id}/`, {
+    fetch(`${get_api_url()}/api/expenses/internalTransactions/${id}/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -1837,7 +1842,7 @@ function editInternalTransactionSave(id) {
 };
 
 function deleteInternalTransactionSave(id) {
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/expenses/internalTransactions/${id}/`, {
+    fetch(`${get_api_url()}/api/expenses/internalTransactions/${id}/`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -1875,7 +1880,7 @@ function filterInternalTransactionSubmitSave() {
     var date = document.getElementById("filterInternalTransactionDate").value;
     var destination = document.getElementById("filterInternalTransactionTo").value;
 
-    url = `https://priyanshuarora.pythonanywhere.com/api/expenses/internalTransactions/?&date=${date}&source=${source}&destination=${destination}`;
+    url = `${get_api_url()}/api/expenses/internalTransactions/?&date=${date}&source=${source}&destination=${destination}`;
     fetch_internal_transations_data(url);
     closeModal();
     clearFilterBtn.disabled = false;
@@ -1887,7 +1892,7 @@ function filterInternalTransactionSubmitSave() {
 }
 
 function fetch_profile() {
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/accounts/profile/${userID}`, {
+    fetch(`${get_api_url()}/api/accounts/profile/${userID}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -1929,7 +1934,7 @@ function updateProfile() {
 
 
 
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/accounts/profile/${userID}`, {
+    fetch(`${get_api_url()}/api/accounts/profile/${userID}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -1967,7 +1972,7 @@ function updatePassword() {
     const current_password = document.getElementById("password1").value;
     const new_password = document.getElementById("password2").value;
 
-    fetch(`https://priyanshuarora.pythonanywhere.com/api/accounts/change-password/`, {
+    fetch(`${get_api_url()}/api/accounts/change-password/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

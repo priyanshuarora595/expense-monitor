@@ -71,7 +71,7 @@
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
-            fetch("https://priyanshuarora.pythonanywhere.com/api/login/", {
+            fetch(`${get_api_url()}/api/login/`, {
                 method: "Post",
                 headers: {
                     "Content-Type": "application/json;charset=UTF-8",
