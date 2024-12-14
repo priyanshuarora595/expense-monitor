@@ -753,11 +753,28 @@ function updateButtonStates(previousUrl, nextUrl) {
     let nextButton = document.getElementById("next-btn");
 
     function previousButtonClickHandler() {
-        fetch_expense_data(previousUrl);
+        if (previousUrl.includes("balance")) {
+            fetch_balance_data(previousUrl);
+        }
+        else if (previousUrl.includes("internal")) {
+            fetch_internal_transaction_data(previousUrl);
+        }
+        else {
+            fetch_expense_data(previousUrl);
+        }
+
     }
 
     function nextButtonClickHandler() {
-        fetch_expense_data(nextUrl);
+        if (nextUrl.includes("balance")) {
+            fetch_balance_data(nextUrl);
+        }
+        else if (nextUrl.includes("internal")) {
+            fetch_internal_transaction_data(nextUrl);
+        }
+        else {
+            fetch_expense_data(nextUrl);
+        }
     }
 
     if (previousUrl != null) {
