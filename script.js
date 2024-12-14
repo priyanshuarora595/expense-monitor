@@ -757,7 +757,7 @@ function updateButtonStates(previousUrl, nextUrl) {
             fetch_balance_data(previousUrl);
         }
         else if (previousUrl.includes("internal")) {
-            fetch_internal_transaction_data(previousUrl);
+            fetch_internal_transations_data(previousUrl);
         }
         else {
             fetch_expense_data(previousUrl);
@@ -770,7 +770,7 @@ function updateButtonStates(previousUrl, nextUrl) {
             fetch_balance_data(nextUrl);
         }
         else if (nextUrl.includes("internal")) {
-            fetch_internal_transaction_data(nextUrl);
+            fetch_internal_transations_data(nextUrl);
         }
         else {
             fetch_expense_data(nextUrl);
