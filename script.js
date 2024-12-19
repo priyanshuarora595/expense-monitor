@@ -2002,6 +2002,7 @@ function populateProfile(data) {
     document.getElementById("firstName").value = data.fname;
     document.getElementById("lastName").value = data.lname;
     document.getElementById("gender").value = data.gender;
+    document.getElementById("sendMonthlyReport").checked = data.send_monthly_report;
 }
 
 function updateProfile() {
@@ -2009,6 +2010,8 @@ function updateProfile() {
     const firstName = document.getElementById("firstName").value;
     const lastName = document.getElementById("lastName").value;
     const gender = document.getElementById("gender").value;
+    const sendMonthlyReport = document.getElementById("sendMonthlyReport").checked;
+    console.log(sendMonthlyReport);
 
 
 
@@ -2022,10 +2025,12 @@ function updateProfile() {
             email: email,
             fname: firstName,
             lname: lastName,
-            gender: gender
+            gender: gender,
+            send_monthly_report: sendMonthlyReport
         })
     }).then((response) => response.json()).then((data) => {
         if (data.id) {
+            console.log(data);
             document.getElementById("message").style.color = 'green';
             document.getElementById("message").textContent = 'Success!!';
         } else {
