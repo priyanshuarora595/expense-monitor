@@ -32,6 +32,7 @@
 
     <div class="container mt-3">
         <h2>Balance Details</h2>
+        <span><button id='mail_me_btn'>Mail me</button></span>
         <h3 id="message">
             </h2>
     </div>
@@ -95,9 +96,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-
+        var id = '';
         document.getElementById("logoutButton").addEventListener("click", function () {
             logout();
+        });
+        document.getElementById("mail_me_btn").addEventListener("click", function () {
+            mail_me(id);
         });
 
         async function check_perm() {
@@ -107,7 +111,7 @@
             else {
                 check_user_logged_in();
                 const urlParams = new URLSearchParams(window.location.search);
-                const id = urlParams.get('id');
+                id = urlParams.get('id');
                 fetch_balance_detail(id);
 
             }
