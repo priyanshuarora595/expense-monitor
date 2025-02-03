@@ -2133,3 +2133,46 @@ function export_data(model) {
             console.error(error);
         });
 }
+
+function mail_me(id) {
+    fetch(`${get_api_url()}/api/balances/details/${id}/?send_mail=true`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Token ${userToken}`
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            const messageElement = document.getElementById("message");
+
+            if (data.message) {
+                messageElement.style.color = 'green';
+                messageElement.textContent = "Success! " + data.message;
+            } else {
+                messageElement.style.color = 'red';
+                messageElement.textContent = data[(Object.keys(data))[0]];
+            }
+
+            setTimeout(() => {
+                messageElement.textContent = '';
+            }, 3000);
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+            const messageElement = document.getElementById("message");
+
+            messageElement.style.color = 'red';
+            messageElement.textContent = "An error occurred: " + error.message;
+
+            setTimeout(() => {
+                messageElement.textContent = '';
+            }, 3000);
+        });
+}
