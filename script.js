@@ -239,11 +239,9 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
         case "filterExpenseModalContent":
             source_options = `<option value="">-------------</option>`
             sourcesList.forEach(function (source) {
-                if (source.is_active) {
-
-                    source_options += `
+                source_options += `
                     <option value="${source.id}">${source.name}</option>`;
-                }
+
             })
 
             commodity_options = `<option value="">-------------</option>`;
