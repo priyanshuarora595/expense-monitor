@@ -13,7 +13,8 @@ let currentDate = new Date();
 let maxDate = (currentDate.getFullYear()) + "-" + (currentDate.getMonth() + 1 < 10 ? '0' : '') + (currentDate.getMonth() + 1);
 let currYear = currentDate.getFullYear();
 
-let api_url = "https://priyanshuarora.pythonanywhere.com";
+// let api_url = "https://priyanshuarora.pythonanywhere.com";
+let api_url = "https://priyanshuexpense.pythonanywhere.com";
 // let api_url = "http://127.0.0.1:8000";
 
 function get_api_url() {
