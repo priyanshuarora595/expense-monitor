@@ -1764,6 +1764,7 @@ function populateBalanceDetails(data) {
         row.innerHTML = `
         <td>${commodity}</td>
         <td>${(detail_data[commodity]['debits'])}</td>
+        <td>${(detail_data[commodity]['credits'])}</td>
         `
         detail_table.appendChild(row);
     }
