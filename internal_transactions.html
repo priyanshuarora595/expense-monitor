@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="biometric.js"></script>
-    <script src="script.js"></script>
-    <script src="mobile-nav.js"></script>
+    <script src="biometric.js" defer></script>
+    <script src="script.js" defer></script>
+    <script src="mobile-nav.js" defer></script>
     <title>Internal Transactions</title>
 </head>
 
@@ -90,8 +90,7 @@
             }
             else {
                 check_user_logged_in();
-                await fetch_sources();
-                await fetch_internal_transations_data();
+                await Promise.all([fetch_sources(), fetch_internal_transations_data()]);
                 if (typeof enableFab === 'function') enableFab();
 
             }
