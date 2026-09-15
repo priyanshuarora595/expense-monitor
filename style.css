@@ -1,7 +1,45 @@
+:root {
+  --color-primary: #007bff;
+  --color-primary-dark: #0056b3;
+  --color-danger: #dc3545;
+  --color-danger-dark: #9b0b1b;
+  --color-success: #28a745;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f2f2f2;
+  --color-border: #dddddd;
+  --color-text: #212529;
+  --color-text-muted: #6c757d;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --touch-target: 44px;
+
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+
+  --z-bottom-nav: 1000;
+  --z-fab: 1001;
+  --z-sheet-backdrop: 1010;
+  --z-sheet: 1011;
+
+  --bottom-nav-height: 56px;
+}
+
 body {
   padding: 20px;
   min-width: fit-content;
   width: 100%;
+}
+
+/* Pages that render the bottom nav (see mobile-nav.js) declare data-active-tab
+   on <body> - only those need room reserved so content isn't hidden behind it. */
+body[data-active-tab] {
+  padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 20px);
 }
 
 .container {
@@ -96,54 +134,284 @@ tr:hover {
 }
 
 
-.sidebar {
-  height: 100%;
-  width: 0px ;
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  right: 0;
-  background-color: #111;
-  overflow: hidden;
-  transition: 0.5s;
-  padding-top: 60px;
-}
-
-.sidebar a {
-  padding: 8px 8px 8px 32px;
-  text-decoration: none;
-  font-size: xxx-large;
-  color: #818181;
-  display: block;
-  transition: 0.3s;
-}
-
-.sidebar a:hover {
-  color: #f1f1f1;
-}
-
-.sidebar .close-btn {
-  position: absolute;
-  top: 0;
-  right: 25px;
-  font-size: 36px;
-  margin-left: 50px;
-}
-
-.open-btn {
-  font-size: 30px;
-  cursor: pointer;
-  position: fixed;
-  top: 20px;
-  right: 15px;
-}
-
-.page-content {
-  margin-left: 0;
-  transition: margin-left 0.5s;
-}
-
 .delete-account {
   color: red;
   cursor: pointer;
+}
+
+/* ==========================================================================
+   Mobile nav: top bar, bottom tab bar, FAB, "More" sheet (see mobile-nav.js)
+   ========================================================================== */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) 0;
+  margin-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topbar h1 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-bottom-nav);
+  display: flex;
+  height: var(--bottom-nav-height);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.bottom-nav-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--touch-target);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.bottom-nav-tab i {
+  font-size: 1.1rem;
+}
+
+.bottom-nav-tab.active {
+  color: var(--color-primary);
+}
+
+.fab {
+  position: fixed;
+  right: var(--space-4);
+  bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + var(--space-4));
+  z-index: var(--z-fab);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 1.4rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.fab:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.more-sheet-dialog {
+  text-align: left;
+}
+
+.more-sheet-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.more-sheet-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--touch-target);
+  padding: var(--space-3) var(--space-2);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.more-sheet-item:last-child {
+  border-bottom: none;
+  color: var(--color-danger);
+}
+
+.more-sheet-item i {
+  width: 20px;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.more-sheet-item:last-child i {
+  color: var(--color-danger);
+}
+
+/* ==========================================================================
+   Bottom-sheet presentation for the existing #Modal (form/filter/More dialogs)
+   ========================================================================== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-sheet-backdrop);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+
+.modal.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease;
+}
+
+.modal-dialog {
+  width: 100%;
+  max-width: 480px;
+  margin: 0;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  transform: translateY(100%);
+  transition: transform 0.25s ease;
+  padding-bottom: env(safe-area-inset-bottom);
+  /* Bootstrap's own .modal-dialog sets pointer-events:none and normally
+     relies on a nested .modal-content to restore it - our sheet content
+     (the More sheet in particular) doesn't always have that wrapper, so
+     restore interactivity here directly. */
+  pointer-events: auto;
+}
+
+.modal.open .modal-dialog {
+  transform: translateY(0);
+}
+
+/* Bootstrap's own .modal-content box (border/radius/background) would
+   otherwise double up visually inside our sheet container. */
+.modal-dialog .modal-content {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* ==========================================================================
+   Data tables -> card list on narrow screens
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  #transactionTable,
+  #balanceTable,
+  #InternalTransactionTable,
+  #transactionTable tbody,
+  #balanceTable tbody,
+  #InternalTransactionTable tbody,
+  #transactionTable tr,
+  #balanceTable tr,
+  #InternalTransactionTable tr,
+  #transactionTable td,
+  #balanceTable td,
+  #InternalTransactionTable td {
+    display: block;
+    width: 100%;
+  }
+
+  #transactionTable thead,
+  #balanceTable thead,
+  #InternalTransactionTable thead {
+    display: none;
+  }
+
+  #transactionTable tr,
+  #balanceTable tr,
+  #InternalTransactionTable tr {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  #transactionTable tr:hover,
+  #balanceTable tr:hover,
+  #InternalTransactionTable tr:hover {
+    background-color: transparent;
+  }
+
+  #transactionTable td,
+  #balanceTable td,
+  #InternalTransactionTable td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: none;
+    text-align: right;
+    padding: var(--space-1) 0;
+  }
+
+  #transactionTable td::before,
+  #balanceTable td::before,
+  #InternalTransactionTable td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    text-align: left;
+    color: var(--color-text-muted);
+    margin-right: var(--space-2);
+  }
+
+  #transactionTable td:nth-child(4),
+  #InternalTransactionTable td:nth-child(4) {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  #balanceTable td:nth-child(4),
+  #balanceTable td:nth-child(5) {
+    font-weight: 600;
+  }
+
+  /* Action cells (Edit/Delete/Details) carry an empty data-label - let them
+     flow inline together at the end of the card instead of each taking a
+     full-width row. */
+  #transactionTable td[data-label=""],
+  #balanceTable td[data-label=""],
+  #InternalTransactionTable td[data-label=""] {
+    display: inline-flex;
+    width: auto;
+    justify-content: flex-end;
+    padding: var(--space-1) var(--space-1);
+  }
+
+  .icon-link {
+    min-width: var(--touch-target);
+    min-height: var(--touch-target);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .pagination .btn-label {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .pagination .btn-label {
+    display: inline;
+    margin-left: 4px;
+  }
 }

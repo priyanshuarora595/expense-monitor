@@ -15,40 +15,27 @@
   <link rel="stylesheet" href="style.css">
   <script src="biometric.js"></script>
     <script src="script.js"></script>
+    <script src="mobile-nav.js"></script>
   <title>Dashboard - Expense Manager</title>
 </head>
 
-<body onload="check_perm()">
+<body onload="check_perm()" data-active-tab="home" data-fab-modal="addExpenseModalContent" data-fab-label="Add expense">
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Expense Manager</a>
-    <div id="mySidebar" class="sidebar">
-      <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
-      <a href="#" onclick="openModal(modalContentId='addExpenseModalContent')">Add Expense</a>
-      <a class="nav-link " href="internal_transactions.html">Internal transactions</a>
-      <a class="nav-link " href="sources.html">Sources</a>
-      <a class="nav-link " href="commodities.html">Commodities</a>
-      <a class="nav-link " href="balance.html">Balance Details</a>
-      <a class="nav-link " href="profile.html">Profile</a>
-      <a class="nav-link nav-btn" id="logoutButton">Logout</a>
-
-    </div>
-    <button class="open-btn" type="button" onclick="openNav()">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-  </nav>
+  <header class="topbar">
+    <h1>Expense Manager</h1>
+  </header>
 
   <div class="container mt-3">
     <h2>Welcome to Your Dashboard</h2>
     <h3 id="message">Your Transactions</h2>
 
       <ul class="pagination">
-        <li><button class="prev" disabled id="prev-btn">Previous</button></li>
+        <li><button class="prev" disabled id="prev-btn"><i class="fas fa-chevron-left"></i><span class="btn-label">Previous</span></button></li>
         <li><button class="prev" id="filter-btn"
-            onclick="openModal(modalContentId='filterExpenseModalContent')">Filter</button></li>
-        <li><button class="next" id="Export_btn" onclick="export_data()">Export</button></li>
-        <li><button class="next" disabled id="clear-filter-btn">Clear filter</button></li>
-        <li><button class="next" disabled id="next-btn">Next</button></li>
+            onclick="openModal(modalContentId='filterExpenseModalContent')"><i class="fas fa-filter"></i><span class="btn-label">Filter</span></button></li>
+        <li><button class="next" id="Export_btn" onclick="export_data()"><i class="fas fa-file-export"></i><span class="btn-label">Export</span></button></li>
+        <li><button class="next" disabled id="clear-filter-btn"><i class="fas fa-times"></i><span class="btn-label">Clear filter</span></button></li>
+        <li><button class="next" disabled id="next-btn"><i class="fas fa-chevron-right"></i><span class="btn-label">Next</span></button></li>
       </ul>
 
       <table id="transactionTable">
@@ -102,10 +89,6 @@
 
   <script>
 
-    document.getElementById("logoutButton").addEventListener("click", function () {
-      logout();
-    });
-
     async function check_perm() {
       if (!check_user_logged_in()) {
         window.location.href = 'index.html';
@@ -115,6 +98,7 @@
         await fetch_sources();
         await fetch_commodities();
         await fetch_expense_data();
+        if (typeof enableFab === 'function') enableFab();
       }
     }
 

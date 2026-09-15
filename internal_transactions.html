@@ -14,42 +14,27 @@
     <link rel="stylesheet" href="style.css">
     <script src="biometric.js"></script>
     <script src="script.js"></script>
+    <script src="mobile-nav.js"></script>
     <title>Internal Transactions</title>
 </head>
 
-<body onload="check_perm()">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="dashboard.html">Expense Manager</a>
-        <div id="mySidebar" class="sidebar">
-            <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">×</a>
-            <a class="nav-link " href="#"
-                onclick="openModal(modalContentId='addInternalTransactionModalContent',sources=sourcesList)">Add
-                Internal Transaction</a>
-            <a class="nav-link " href="dashboard.html">Dashboard</a>
-            <a class="nav-link " href="sources.html">Sources</a>
-            <a class="nav-link " href="commodities.html">Commodities</a>
-            <a class="nav-link " href="balance.html">Balance Details</a>
-            <a class="nav-link " href="profile.html">Profile</a>
-            <a class="nav-link nav-btn" id="logoutButton">Logout</a>
-
-        </div>
-        <button class="open-btn" type="button" onclick="openNav()">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </nav>
+<body onload="check_perm()" data-active-tab="more" data-fab-modal="addInternalTransactionModalContent" data-fab-label="Add internal transaction">
+    <header class="topbar">
+        <h1>Internal Transactions</h1>
+    </header>
 
     <div class="container mt-3">
         <h2>Welcome to Your Internal Transactions</h2>
         <h3 id="message">
             </h2>
             <ul class="pagination">
-                <li><button class="prev" disabled id="prev-btn">Previous</button></li>
+                <li><button class="prev" disabled id="prev-btn"><i class="fas fa-chevron-left"></i><span class="btn-label">Previous</span></button></li>
                 <li><button class="prev" id="filter-btn"
-                        onclick="openModal(modalContentId='filterInternalTransactionModalContent')">Filter</button>
+                        onclick="openModal(modalContentId='filterInternalTransactionModalContent')"><i class="fas fa-filter"></i><span class="btn-label">Filter</span></button>
                 </li>
-                <li><button class="next" id="Export_btn" onclick="export_data()">Export</button></li>
-                <li><button class="next" disabled id="clear-filter-btn">Clear filter</button></li>
-                <li><button class="next" disabled id="next-btn">Next</button></li>
+                <li><button class="next" id="Export_btn" onclick="export_data()"><i class="fas fa-file-export"></i><span class="btn-label">Export</span></button></li>
+                <li><button class="next" disabled id="clear-filter-btn"><i class="fas fa-times"></i><span class="btn-label">Clear filter</span></button></li>
+                <li><button class="next" disabled id="next-btn"><i class="fas fa-chevron-right"></i><span class="btn-label">Next</span></button></li>
             </ul>
             <table id="InternalTransactionTable">
                 <thead>
@@ -99,10 +84,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
 
-        document.getElementById("logoutButton").addEventListener("click", function () {
-            logout();
-        });
-
         async function check_perm() {
             if (!check_user_logged_in()) {
                 window.location.href = 'index.html';
@@ -111,6 +92,7 @@
                 check_user_logged_in();
                 await fetch_sources();
                 await fetch_internal_transations_data();
+                if (typeof enableFab === 'function') enableFab();
 
             }
         }
