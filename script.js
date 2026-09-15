@@ -21,6 +21,89 @@ function get_api_url() {
     return api_url;
 }
 
+// --- PWA: service worker, offline banner, biometric lock gate ---
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch((err) => {
+            console.error('Service worker registration failed:', err);
+        });
+    });
+
+    navigator.serviceWorker.addEventListener('message', (event) => {
+        const data = event.data || {};
+        if (data.type === 'OUTBOX_QUEUED') {
+            showConnectivityBanner(
+                `You're offline. ${data.count} change(s) saved locally and will sync when you're back online.`,
+                '#dc3545'
+            );
+        } else if (data.type === 'OUTBOX_SYNCED') {
+            if (data.replayed > 0) {
+                showConnectivityBanner(`Synced ${data.replayed} offline change(s).`, '#28a745');
+                setTimeout(hideConnectivityBanner, 3000);
+                refreshCurrentPageData();
+            }
+            if (data.remaining === 0) {
+                setTimeout(hideConnectivityBanner, data.replayed > 0 ? 3000 : 0);
+            }
+        }
+    });
+}
+
+function showConnectivityBanner(text, color) {
+    let banner = document.getElementById('connectivity-banner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'connectivity-banner';
+        banner.style.cssText =
+            'position:fixed;top:0;left:0;right:0;z-index:99998;padding:8px;' +
+            'text-align:center;font-size:14px;color:#fff;';
+        document.body.prepend(banner);
+    }
+    banner.textContent = text;
+    banner.style.background = color;
+    banner.style.display = 'block';
+}
+
+function hideConnectivityBanner() {
+    const banner = document.getElementById('connectivity-banner');
+    if (banner) banner.style.display = 'none';
+}
+
+function flushOutboxIfOnline() {
+    if (navigator.onLine && navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({ type: 'FLUSH_OUTBOX' });
+    }
+}
+
+// Best-effort refresh of whichever list the current page happens to show,
+// after queued offline changes have synced to the backend.
+function refreshCurrentPageData() {
+    if (typeof fetch_expense_data === 'function' && document.querySelector('#transactionTable')) fetch_expense_data();
+    if (typeof fetch_balance_data === 'function' && document.querySelector('#balanceTable')) fetch_balance_data();
+    if (typeof fetch_internal_transations_data === 'function' && document.querySelector('#InternalTransactionTable')) fetch_internal_transations_data();
+    if (typeof load_sources === 'function' && document.querySelector('#SourcesTable')) load_sources();
+    if (typeof load_commodities === 'function' && document.querySelector('#CommodityTable')) load_commodities();
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    if (localStorage.getItem('logged_in') === '1' && typeof ensureUnlocked === 'function') {
+        await ensureUnlocked();
+    }
+
+    if (!navigator.onLine) {
+        showConnectivityBanner("You're offline. Changes will be saved locally and synced when you're back online.", '#dc3545');
+    }
+
+    window.addEventListener('online', () => {
+        showConnectivityBanner('Back online. Syncing...', '#17a2b8');
+        flushOutboxIfOnline();
+    });
+    window.addEventListener('offline', () => {
+        showConnectivityBanner("You're offline. Changes will be saved locally and synced when you're back online.", '#dc3545');
+    });
+});
+
 function login_redirect() {
     window.location.href = 'index.html';
     localStorage.clear();
@@ -941,6 +1024,9 @@ function addSourceSave() {
             if (data.id) {
                 document.getElementById("modal-message").style.color = 'green';
                 document.getElementById("modal-message").textContent = 'Success!!';
+            } else if (data.queued) {
+                document.getElementById("modal-message").style.color = 'orange';
+                document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
             } else {
                 document.getElementById("modal-message").style.color = 'red';
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -990,6 +1076,9 @@ function editSourceSave(id) {
             if (data.id) {
                 document.getElementById("modal-message").style.color = 'green';
                 document.getElementById("modal-message").textContent = 'Success!!';
+            } else if (data.queued) {
+                document.getElementById("modal-message").style.color = 'orange';
+                document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
             } else {
                 document.getElementById("modal-message").style.color = 'red';
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1023,6 +1112,9 @@ function deleteSourceSave(id) {
             document.getElementById("modal-message").style.color = 'green';
             document.getElementById("modal-message").textContent = 'Success!!';
 
+        } else if (data.status == 202) {
+            document.getElementById("modal-message").style.color = 'orange';
+            document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
         } else {
             data = data.json();
             document.getElementById("modal-message").style.color = 'red';
@@ -1123,6 +1215,9 @@ function addCommoditySave() {
             if (data.id) {
                 document.getElementById("modal-message").style.color = 'green';
                 document.getElementById("modal-message").textContent = 'Success!!';
+            } else if (data.queued) {
+                document.getElementById("modal-message").style.color = 'orange';
+                document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
             } else {
                 document.getElementById("modal-message").style.color = 'red';
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1168,6 +1263,9 @@ function editCommoditySave(id) {
             if (data.id) {
                 document.getElementById("modal-message").style.color = 'green';
                 document.getElementById("modal-message").textContent = 'Success!!';
+            } else if (data.queued) {
+                document.getElementById("modal-message").style.color = 'orange';
+                document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
             } else {
                 document.getElementById("modal-message").style.color = 'red';
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1200,6 +1298,9 @@ function deleteCommoditySave(id) {
         if (data.status == 204) {
             document.getElementById("modal-message").style.color = 'green';
             document.getElementById("modal-message").textContent = 'Success!!';
+        } else if (data.status == 202) {
+            document.getElementById("modal-message").style.color = 'orange';
+            document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
         } else {
             data = data.json();
             document.getElementById("modal-message").style.color = 'red';
@@ -1243,6 +1344,9 @@ function addExpenseSave() {
             if (data.id) {
                 document.getElementById("modal-message").style.color = 'green';
                 document.getElementById("modal-message").textContent = 'Success!!';
+            } else if (data.queued) {
+                document.getElementById("modal-message").style.color = 'orange';
+                document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
             } else {
                 document.getElementById("modal-message").style.color = 'red';
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1297,6 +1401,9 @@ function editExpenseSave(id) {
         if (data.id) {
             document.getElementById("modal-message").style.color = 'green';
             document.getElementById("modal-message").textContent = 'Success!!';
+        } else if (data.queued) {
+            document.getElementById("modal-message").style.color = 'orange';
+            document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
         } else {
             document.getElementById("modal-message").style.color = 'red';
             document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1327,6 +1434,9 @@ function deleteExpenseSave(id) {
         if (data.status == 204) {
             document.getElementById("modal-message").style.color = 'green';
             document.getElementById("modal-message").textContent = 'Success!!';
+        } else if (data.status == 202) {
+            document.getElementById("modal-message").style.color = 'orange';
+            document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
         } else {
             data = data.json();
             document.getElementById("modal-message").style.color = 'red';
@@ -1464,6 +1574,13 @@ function addBlanaceSave() {
                     document.getElementById('modal-message').textContent = '';
                     fetch_balance_data();
                 }, 1500);
+            } else if (data.queued) {
+                document.getElementById("modal-message").style.color = 'orange';
+                document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
+                setTimeout(function () {
+                    document.getElementById('modal-message').textContent = '';
+                    closeModal();
+                }, 1500);
             } else {
                 document.getElementById("modal-message").style.color = 'red';
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1520,6 +1637,9 @@ function editBalanceSave(id) {
             if (data.id) {
                 document.getElementById("modal-message").style.color = 'green';
                 document.getElementById("modal-message").textContent = 'Success!!';
+            } else if (data.queued) {
+                document.getElementById("modal-message").style.color = 'orange';
+                document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
             } else {
                 document.getElementById("modal-message").style.color = 'red';
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1551,6 +1671,9 @@ function deleteBalanceSave(id) {
         if (data.status == 204) {
             document.getElementById("modal-message").style.color = 'green';
             document.getElementById("modal-message").textContent = 'Success!!';
+        } else if (data.status == 202) {
+            document.getElementById("modal-message").style.color = 'orange';
+            document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
         } else {
             data = data.json();
             document.getElementById("modal-message").style.color = 'red';
@@ -1862,6 +1985,9 @@ function addInternalTransactionSave() {
             if (data.id) {
                 document.getElementById("modal-message").style.color = 'green';
                 document.getElementById("modal-message").textContent = 'Success!!';
+            } else if (data.queued) {
+                document.getElementById("modal-message").style.color = 'orange';
+                document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
             } else {
                 document.getElementById("modal-message").style.color = 'red';
                 document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1900,6 +2026,9 @@ function editInternalTransactionSave(id) {
         if (data.id) {
             document.getElementById("modal-message").style.color = 'green';
             document.getElementById("modal-message").textContent = 'Success!!';
+        } else if (data.queued) {
+            document.getElementById("modal-message").style.color = 'orange';
+            document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
         } else {
             document.getElementById("modal-message").style.color = 'red';
             document.getElementById("modal-message").textContent = data[(Object.keys(data))[0]];
@@ -1930,6 +2059,9 @@ function deleteInternalTransactionSave(id) {
         if (data.status == 204) {
             document.getElementById("modal-message").style.color = 'green';
             document.getElementById("modal-message").textContent = 'Success!!';
+        } else if (data.status == 202) {
+            document.getElementById("modal-message").style.color = 'orange';
+            document.getElementById("modal-message").textContent = 'Saved offline. Will sync when back online.';
         } else {
             data = data.json();
             document.getElementById("modal-message").style.color = 'red';

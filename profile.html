@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <link rel="apple-touch-icon" href="icons/icon-180.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Expenses">
 
     <link
       rel="stylesheet"
@@ -13,6 +18,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
     />
     <link rel="stylesheet" href="style.css" />
+    <script src="biometric.js"></script>
     <script src="script.js"></script>
     <title>Profile - Expense Manager</title>
   </head>
@@ -147,6 +153,14 @@
         </button>
       </form>
 
+      <h3 class="mt-5">Security</h3>
+      <div class="form-group">
+        <p id="biometricStatus">Fingerprint / Face ID quick-unlock is off on this device.</p>
+        <button type="button" class="btn btn-secondary" id="biometricToggleBtn" onclick="toggleBiometric()">
+          Enable fingerprint / Face ID unlock
+        </button>
+      </div>
+
       <h3 class="mt-5">Danger Zone</h3>
       <form id="DeleteAccount">
         <div class="form-group">
@@ -192,6 +206,48 @@
           check_user_logged_in();
           //console.log(localStorage.getItem("userID"));
           await fetch_profile();
+          refreshBiometricUI();
+        }
+      }
+
+      function refreshBiometricUI() {
+        const statusEl = document.getElementById("biometricStatus");
+        const btn = document.getElementById("biometricToggleBtn");
+        if (isBiometricEnabled()) {
+          statusEl.textContent = "Fingerprint / Face ID quick-unlock is on for this device.";
+          btn.textContent = "Disable fingerprint / Face ID unlock";
+        } else {
+          statusEl.textContent = "Fingerprint / Face ID quick-unlock is off on this device.";
+          btn.textContent = "Enable fingerprint / Face ID unlock";
+        }
+      }
+
+      async function toggleBiometric() {
+        if (isBiometricEnabled()) {
+          disableBiometric();
+          refreshBiometricUI();
+          return;
+        }
+        if (!(await isBiometricSupported())) {
+          document.getElementById("message").style.color = "red";
+          document.getElementById("message").textContent =
+            "This device/browser doesn't support fingerprint or Face ID unlock.";
+          setTimeout(function () {
+            document.getElementById("message").textContent = "";
+          }, 3000);
+          return;
+        }
+        try {
+          await registerBiometric(userID, document.getElementById("username").value);
+          sessionStorage.setItem('appUnlocked', '1');
+          refreshBiometricUI();
+        } catch (err) {
+          document.getElementById("message").style.color = "red";
+          document.getElementById("message").textContent =
+            "Could not enable fingerprint/Face ID unlock: " + err.message;
+          setTimeout(function () {
+            document.getElementById("message").textContent = "";
+          }, 3000);
         }
       }
 
