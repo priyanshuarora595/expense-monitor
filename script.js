@@ -133,7 +133,7 @@ window.onclick = function (event) {
     var modals = document.querySelectorAll('.modal');
     modals.forEach(function (modal) {
         if (event.target === modal) {
-            modal.style.display = 'none';
+            modal.classList.remove('open');
         }
     });
 };
@@ -146,18 +146,6 @@ function createYearDropdown() {
     }
 }
 
-function openNav() {
-    document.getElementById("mySidebar").style.width = "70%";
-    document.getElementById("mySidebar").style.overflow = "auto";
-    // document.getElementsByClassName("page-content")[0].style.marginLeft = "250px";
-}
-
-function closeNav() {
-    document.getElementById("mySidebar").style.width = "0px";
-    document.getElementById("mySidebar").style.overflow = "hidden";
-    // document.getElementsByClassName("page-content")[0].style.marginLeft = "0";
-}
-
 
 function openModal(modalContentId, index = null, sources = sourcesList, commodities = commoditiesList, balances = balancesList) {
     let transaction = '';
@@ -166,7 +154,7 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
     }
     const modal = document.getElementById('Modal');
     const modalContent = document.getElementById(modalContentId);
-    modal.style.display = 'block';
+    modal.classList.add('open');
     var saveButton = document.getElementById('modal-save-btn');
     saveButton = customRemoveEventListeners(saveButton);
     switch (modalContentId) {
@@ -810,7 +798,7 @@ function openModal(modalContentId, index = null, sources = sourcesList, commodit
 
 function closeModal() {
     const modal = document.getElementById('Modal');
-    modal.style.display = 'none';
+    modal.classList.remove('open');
     var modalBody = document.querySelector('.modal-body');
     // Access each child div one by one
     for (var i = 0; i < modalBody.children.length; i++) {
@@ -931,14 +919,14 @@ function populateTransactionTable(transactions) {
     transactions.forEach((transaction, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-      <td>${transaction.date}</td>
-      <td>${transaction.source.name}</td>
-      <td>${transaction.transaction_type}</td>
-      <td>${transaction.amount}</td>
-      <td>${transaction.commodity.name}</td>
-      <td>${transaction.comments}</td>
-      <td><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editExpenseModalContent',${index})><i class="fas fa-edit"></i></a></td>
-      <td><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteExpenseModalContent',${index})><i class="fas fa-trash-alt"></i></a></td> 
+      <td data-label="Date">${transaction.date}</td>
+      <td data-label="Source">${transaction.source.name}</td>
+      <td data-label="Type">${transaction.transaction_type}</td>
+      <td data-label="Amount">${transaction.amount}</td>
+      <td data-label="Commodity">${transaction.commodity.name}</td>
+      <td data-label="Comments">${transaction.comments}</td>
+      <td data-label=""><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editExpenseModalContent',${index})><i class="fas fa-edit"></i></a></td>
+      <td data-label=""><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteExpenseModalContent',${index})><i class="fas fa-trash-alt"></i></a></td>
       `;
         tableBody.appendChild(row);
     });
@@ -1523,15 +1511,15 @@ function populateBalanceTable(balances_data) {
     balances_data.forEach((transaction, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-      <td>${transaction.year}</td>
-      <td>${transaction.month}</td>
-      <td>${transaction.source.name}</td>
-      <td>${transaction.first_day_amount}</td>
-      <td>${transaction.last_day_amount}</td>
+      <td data-label="Year">${transaction.year}</td>
+      <td data-label="Month">${transaction.month}</td>
+      <td data-label="Source">${transaction.source.name}</td>
+      <td data-label="First Day">${transaction.first_day_amount}</td>
+      <td data-label="Last Day">${transaction.last_day_amount}</td>
 
-      <td><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editBalanceModalContent',${index})><i class="fas fa-edit"></i></a></td>
-      <td><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteBalanceModalContent',${index})><i class="fas fa-trash-alt"></i></a></td>
-      <td><a class="icon-link detail-icon" title="Details"   href='balanceDetails.html?id=${transaction.id}' target='_blank')><i class="fas fa-info-circle"></i></a></td> 
+      <td data-label=""><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editBalanceModalContent',${index})><i class="fas fa-edit"></i></a></td>
+      <td data-label=""><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteBalanceModalContent',${index})><i class="fas fa-trash-alt"></i></a></td>
+      <td data-label=""><a class="icon-link detail-icon" title="Details"   href='balanceDetails.html?id=${transaction.id}' target='_blank')><i class="fas fa-info-circle"></i></a></td>
       `;
         tableBody.appendChild(row);
     });
@@ -1941,13 +1929,13 @@ function populateInternalTransactionTable(data) {
     transaction_data.forEach((transaction, index) => {
         const row = document.createElement("tr");
         row.innerHTML = `
-        <td>${transaction['date']}</td>
-        <td>${transaction['source']['name']}</td>
-        <td>${transaction['destination']['name']}</td>
-        <td>${transaction['amount']}</td>
-        <td>${transaction['comments']}</td>
-        <td><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editInternalTransactionModalContent',${index})><i class="fas fa-edit"></i></a></td>
-        <td><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteInternalTransactionModalContent',${index})><i class="fas fa-trash-alt"></i></a></td> 
+        <td data-label="Date">${transaction['date']}</td>
+        <td data-label="From">${transaction['source']['name']}</td>
+        <td data-label="To">${transaction['destination']['name']}</td>
+        <td data-label="Amount">${transaction['amount']}</td>
+        <td data-label="Comments">${transaction['comments']}</td>
+        <td data-label=""><a class="icon-link edit-icon" title="Edit"  onclick=openModal('editInternalTransactionModalContent',${index})><i class="fas fa-edit"></i></a></td>
+        <td data-label=""><a class="icon-link delete-icon" title="Delete"  onclick=openModal('deleteInternalTransactionModalContent',${index})><i class="fas fa-trash-alt"></i></a></td>
         `
         internalTransactions_table.appendChild(row);
     }

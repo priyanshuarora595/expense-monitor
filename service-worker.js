@@ -1,6 +1,6 @@
 importScripts('offline-db.js');
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v3';
 const STATIC_CACHE = `expense-monitor-static-${CACHE_VERSION}`;
 const API_CACHE = `expense-monitor-api-${CACHE_VERSION}`;
 
@@ -27,6 +27,7 @@ const PRECACHE_URLS = [
     'script.js',
     'offline-db.js',
     'biometric.js',
+    'mobile-nav.js',
     'manifest.json',
     'icons/icon-192.png',
     'icons/icon-512.png',
