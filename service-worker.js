@@ -1,6 +1,6 @@
 importScripts('offline-db.js');
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const STATIC_CACHE = `expense-monitor-static-${CACHE_VERSION}`;
 const API_CACHE = `expense-monitor-api-${CACHE_VERSION}`;
 
