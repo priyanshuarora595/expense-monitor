@@ -1,12 +1,18 @@
-// Local biometric "quick unlock" for the PWA, backed by the WebAuthn platform
-// authenticator (Touch ID / Face ID / Android fingerprint).
+// Biometric (Touch ID / Face ID / Android fingerprint) support for the PWA,
+// backed by WebAuthn. Two independent things live in this file:
 //
-// This does NOT replace server login and there is no backend involved: it's a
-// device-local gate that unlocks the already-stored session token, the same
-// way a banking app's "quick unlock" works. The credential is registered and
-// verified entirely by the OS/browser; we only care whether
-// navigator.credentials.get() resolves (sensor accepted) or rejects
-// (cancelled/failed).
+// 1. A local "quick unlock" gate (isBiometricEnabled/unlockWithBiometric/
+//    ensureUnlocked) - no backend involved, just checks whether the sensor
+//    accepts, then reveals the already-stored session token. Fast and works
+//    offline, but only useful while that token is still valid.
+// 2. Real server-verified passwordless login/registration (registerBiometric/
+//    loginWithBiometric) - talks to /api/webauthn/*, so it can obtain a BRAND
+//    NEW token even after the old one has expired. Requires
+//    SimpleWebAuthnBrowser (loaded via CDN on the pages that need it) to
+//    handle the WebAuthn <-> JSON conversion.
+//
+// Both share the same credential: registering once (via registerBiometric)
+// serves both purposes - no separate enrollment needed.
 
 const BIOMETRIC_CREDENTIAL_KEY = 'biometricCredentialId';
 
@@ -40,35 +46,82 @@ function isBiometricEnabled() {
 }
 
 function disableBiometric() {
+    const credentialId = localStorage.getItem(BIOMETRIC_CREDENTIAL_KEY);
     localStorage.removeItem(BIOMETRIC_CREDENTIAL_KEY);
     sessionStorage.removeItem('appUnlocked');
+
+    // Best-effort: also remove the server-side record so a disabled device
+    // can't still be used for passwordless login. Never block the local
+    // disable on this - the user should always be able to turn this off
+    // locally even if offline or the request fails.
+    const userToken = localStorage.getItem('userToken');
+    if (credentialId && userToken) {
+        fetch(`${get_api_url()}/api/webauthn/credentials/${encodeURIComponent(credentialId)}/`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Token ${userToken}` },
+        }).catch(() => {});
+    }
 }
 
+// Server-verified registration: gets a real challenge from the backend,
+// creates the credential, and has the backend verify + store its public key.
+// The same credential is then also used by the local-only quick-unlock gate.
 async function registerBiometric(userID, username) {
-    const credential = await navigator.credentials.create({
-        publicKey: {
-            challenge: crypto.getRandomValues(new Uint8Array(32)),
-            rp: { name: 'Expense Manager', id: location.hostname },
-            user: {
-                id: new TextEncoder().encode(String(userID)),
-                name: username || 'user',
-                displayName: username || 'user',
-            },
-            pubKeyCredParams: [
-                { type: 'public-key', alg: -7 },   // ES256
-                { type: 'public-key', alg: -257 }, // RS256
-            ],
-            authenticatorSelection: {
-                authenticatorAttachment: 'platform',
-                userVerification: 'required',
-                residentKey: 'preferred',
-            },
-            timeout: 60000,
-            attestation: 'none',
-        },
+    const userToken = localStorage.getItem('userToken');
+    const optionsResp = await fetch(`${get_api_url()}/api/webauthn/register/options/`, {
+        method: 'POST',
+        headers: { 'Authorization': `Token ${userToken}` },
     });
-    if (!credential) throw new Error('Biometric registration was not completed');
-    localStorage.setItem(BIOMETRIC_CREDENTIAL_KEY, bufferToBase64Url(credential.rawId));
+    if (!optionsResp.ok) throw new Error('Could not start biometric registration');
+    const { options, state } = await optionsResp.json();
+
+    const registrationResponse = await SimpleWebAuthnBrowser.startRegistration({
+        optionsJSON: JSON.parse(options),
+    });
+
+    const verifyResp = await fetch(`${get_api_url()}/api/webauthn/register/verify/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Token ${userToken}` },
+        body: JSON.stringify({ credential: registrationResponse, state }),
+    });
+    const verifyData = await verifyResp.json();
+    if (!verifyResp.ok || !verifyData.success) {
+        throw new Error(verifyData.error || 'Could not verify biometric registration');
+    }
+
+    localStorage.setItem(BIOMETRIC_CREDENTIAL_KEY, registrationResponse.rawId);
+}
+
+// Real passwordless login: no existing session needed. Gets a login
+// challenge, lets the browser pick a registered discoverable credential
+// (no username required), and exchanges the signed assertion for a fresh
+// token from the backend - works even after the old token has expired.
+async function loginWithBiometric() {
+    const optionsResp = await fetch(`${get_api_url()}/api/webauthn/login/options/`, {
+        method: 'POST',
+    });
+    if (!optionsResp.ok) throw new Error('Could not start fingerprint login');
+    const { options, state } = await optionsResp.json();
+
+    const authenticationResponse = await SimpleWebAuthnBrowser.startAuthentication({
+        optionsJSON: JSON.parse(options),
+    });
+
+    const verifyResp = await fetch(`${get_api_url()}/api/webauthn/login/verify/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: authenticationResponse, state }),
+    });
+    const data = await verifyResp.json();
+    if (!verifyResp.ok || !data.token) {
+        throw new Error(data.error || 'Fingerprint login failed');
+    }
+
+    localStorage.setItem('userToken', data.token);
+    localStorage.setItem('userID', data.user_id);
+    localStorage.setItem('userEmail', data.email);
+    localStorage.setItem('logged_in', '1');
+    sessionStorage.setItem('appUnlocked', '1');
 }
 
 async function unlockWithBiometric() {

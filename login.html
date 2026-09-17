@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@14.0.0/dist/bundle/index.umd.min.js" defer></script>
     <script src="biometric.js" defer></script>
     <script src="script.js" defer></script>
     <title>User Login</title>
@@ -40,6 +41,9 @@
 
         </form>
         <button type="button" class="btn btn-primary" onclick="attemptLogin()">Login</button>
+        <button type="button" class="btn btn-outline-primary" id="biometricLoginBtn" style="display:none;" onclick="attemptBiometricLogin()">
+            <i class="fas fa-fingerprint"></i> Login with Fingerprint / Face ID
+        </button>
 
         <p class="mt-3">
         <p id="loginMessage" class="mt-3"></p>
@@ -52,9 +56,26 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        function check_perm() {
+        async function check_perm() {
             if (check_user_logged_in()) {
                 window.location.href = 'dashboard.html';
+            } else if (await isBiometricSupported()) {
+                document.getElementById('biometricLoginBtn').style.display = 'inline-block';
+            }
+        }
+
+        async function attemptBiometricLogin() {
+            try {
+                await loginWithBiometric();
+                document.getElementById("loginMessage").style.color = 'green';
+                document.getElementById("loginMessage").textContent = "Login successful, redirecting to your dashboard";
+                window.location.href = "dashboard.html";
+            } catch (err) {
+                document.getElementById("loginMessage").style.color = 'red';
+                document.getElementById("loginMessage").textContent = err.message || "Fingerprint login failed. Please use your password.";
+                setTimeout(function () {
+                    document.getElementById('loginMessage').textContent = '';
+                }, 3000);
             }
         }
 
