@@ -1,6 +1,6 @@
 importScripts('offline-db.js');
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v6';
 const STATIC_CACHE = `expense-monitor-static-${CACHE_VERSION}`;
 const API_CACHE = `expense-monitor-api-${CACHE_VERSION}`;
 
@@ -65,6 +65,11 @@ const NO_QUEUE_PATTERNS = [
     /\/api\/login\/?$/,
     /\/api\/logout\/?$/,
     /\/api\/accounts\/change-password\/?$/,
+    // WebAuthn challenges expire in ~90s server-side and are single-use -
+    // queuing one of these for a later blind replay would always fail (or
+    // worse, silently look "queued" to the user when nothing actually
+    // happened), so these must fail immediately when offline instead.
+    /\/api\/webauthn\//,
 ];
 
 function shouldQueueWrite(request, url) {

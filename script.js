@@ -105,8 +105,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function login_redirect() {
+    // Only clear the session itself - not biometricCredentialId, which is a
+    // per-device enrollment that should survive a forced re-login (matches
+    // logout()'s behavior, which already does this correctly).
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userID');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('logged_in');
     window.location.href = 'index.html';
-    localStorage.clear();
 }
 function get_userData() {
     if (localStorage.getItem("userToken") && localStorage.getItem("userID") && localStorage.getItem("userEmail")) {
